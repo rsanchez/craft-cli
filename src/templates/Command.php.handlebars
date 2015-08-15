@@ -1,0 +1,65 @@
+<?php
+{{#if namespace}}
+
+namespace {{namespace}};
+{{/if}}
+
+use CraftCli\Command\BaseCommand;{{#if hasArguments}}
+use Symfony\Component\Console\Input\InputArgument;{{/if}}{{#if hasOptions}}
+use Symfony\Component\Console\Input\InputOption;{{/if}}
+
+class {{className}}Command extends BaseCommand
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected $name = '{{commandName}}';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $description = '{{commandDescription}}';{{#if hasArguments}}
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getArguments()
+    {
+        /*
+        return array(
+            array(
+                'example', // name
+                InputArgument::OPTIONAL, // mode
+                'Describe what this argument does', // description
+                null, // default value
+            ),
+        );
+        */
+    }{{/if}}{{#if hasOptions}}
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getOptions()
+    {
+        /*
+        return array(
+            array(
+                'example', // name
+                'e', // shortcut
+                InputOption::VALUE_NONE, // mode
+                'Describe what this option does', // description
+                null, // default value
+            ),
+        );
+        */
+    }{{/if}}
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function fire()
+    {
+        // do something here
+    }
+}
