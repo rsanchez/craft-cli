@@ -15,7 +15,7 @@ class InitCommand extends Command implements ExemptFromBootstrapInterface
     /**
      * {@inheritdoc}
      */
-    protected $description = 'Creates a default configuration file.';
+    protected $description = 'Create a default configuration file.';
 
     /**
      * {@inheritdoc}

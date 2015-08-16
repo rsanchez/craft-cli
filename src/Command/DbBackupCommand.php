@@ -14,7 +14,7 @@ class DbBackupCommand extends BaseCommand
     /**
      * {@inheritdoc}
      */
-    protected $description = 'Backup your database to craft/storage.';
+    protected $description = 'Backup your database to <info>craft/storage</info>.';
 
     /**
      * {@inheritdoc}
