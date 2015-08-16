@@ -3,26 +3,22 @@
 namespace CraftCli\Command;
 
 use CraftCli\Command\ExemptFromBootstrapInterface;
+use CraftCli\Support\TarExtractor;
+use CraftCli\Support\Downloader\TempDownloader;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Helper\ProgressBar;
-use PharData;
+use Exception;
 
 class InstallCraftCommand extends BaseCommand implements ExemptFromBootstrapInterface
 {
     /**
      * {@inheritdoc}
      */
-    protected $name = 'install';
+    protected $name = 'install:craft';
 
     /**
      * {@inheritdoc}
      */
-    protected $description = '';
-
-    /**
-     * @var Symfony\Component\Console\Helper\ProgressBar
-     */
-    protected $progressBar;
+    protected $description = 'Install Craft to the current directory.';
 
     /**
      * {@inheritdoc}
@@ -81,93 +77,29 @@ class InstallCraftCommand extends BaseCommand implements ExemptFromBootstrapInte
 
         $this->comment('Downloading...');
 
-        // create a temp file
-        $tempPath = tempnam(sys_get_temp_dir(), 'craft_installer_');
+        $downloader = new TempDownloader($url, '.tar.gz');
 
-        $filePath = $tempPath.'.tar.gz';
+        $downloader->setOutput($this->output);
 
-        $tarPath = $tempPath.'.tar';
-
-        // rename the temp file to .tar.gz (PharData requires that extension)
-        rename($tempPath, $filePath);
-
-        // open the temp file for writing
-        $fileHandle = fopen($filePath, 'wb');
-
-        if ($fileHandle === false) {
-            $this->error('Could not open temp file.');
+        try {
+            $filePath = $downloader->download();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
 
             return;
         }
-
-        // download context so we can track download progress
-        $downloadContext = stream_context_create(array(), array('notification' => array($this, 'showDownloadProgress')));
-
-        // open the download url for reading
-        $downloadHandle = fopen($url, 'rb', false, $downloadContext);
-
-        if ($downloadHandle === false) {
-            $this->error('Could not download installation file.');
-
-            return;
-        }
-
-        while (! feof($downloadHandle)) {
-            if (fwrite($fileHandle, fread($downloadHandle, 1024)) === false) {
-                $this->error('Could not write installation file to disk.');
-
-                return;
-            }
-        }
-
-        fclose($downloadHandle);
-
-        if ($this->progressBar) {
-            $this->progressBar->finish();
-
-            $this->line('');
-        }
-
-        fclose($fileHandle);
 
         $this->comment('Extracting...');
 
-        // create a tar file
-        (new PharData($filePath))->decompress();
+        $tarExtractor = new TarExtractor($filePath, getcwd());
 
-        // unarchive from the tar
-        (new PharData($tarPath))->extractTo(getcwd(), null, true);
+        $tarExtractor->extract();
 
         // change the name of the public folder
         if ($public = $this->option('public')) {
             rename(getcwd().'/public', getcwd().'/'.$public);
         }
 
-        // remove the temp files
-        unlink($filePath);
-
-        unlink($tarPath);
-
         $this->info('Installation complete!');
-    }
-
-    protected function showDownloadProgress(
-        $notificationCode,
-        $severity,
-        $message,
-        $messageCode,
-        $bytesTransferred,
-        $bytesMax
-    ) {
-        switch ($notificationCode) {
-            case STREAM_NOTIFY_FILE_SIZE_IS:
-                $this->progressBar = new ProgressBar($this->output, $bytesMax);
-                break;
-            case STREAM_NOTIFY_PROGRESS:
-                if ($this->progressBar) {
-                    $this->progressBar->setProgress($bytesTransferred);
-                }
-                break;
-        }
     }
 }
