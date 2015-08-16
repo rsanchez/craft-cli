@@ -248,7 +248,7 @@ class Application extends ConsoleApplication
 
         // Session class needs this
         if (! isset($_SERVER['SERVER_NAME'])) {
-            $_SERVER['SERVER_NAME'] = 'eecli';
+            $_SERVER['SERVER_NAME'] = 'localhost';
         }
 
         // Add user-defined commands from config

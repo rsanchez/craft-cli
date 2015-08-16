@@ -19,7 +19,7 @@ if (!file_exists(CRAFT_CONFIG_PATH.'license.key')) {
 }
 
 // Set the environment
-defined('CRAFT_ENVIRONMENT') || define('CRAFT_ENVIRONMENT', 'eecli');
+defined('CRAFT_ENVIRONMENT') || define('CRAFT_ENVIRONMENT', 'localhost');
 
 error_reporting(E_ALL & ~E_STRICT);
 ini_set('display_errors', 1);
