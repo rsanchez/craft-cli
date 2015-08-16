@@ -40,15 +40,13 @@ Yii::setPathOfAlias('plugins', CRAFT_PLUGINS_PATH);
 
 $config = require CRAFT_APP_PATH.'etc/config/main.php';
 
-$appClass = '\CraftCli\Yii\Application';
+$appClass = '\\Craft\\ConsoleApp';
 
 $app = new $appClass($config);
 
-CraftCli\Yii\Application::setGlobalApp($app);
-
 function craft()
 {
-    return CraftCli\Yii\Application::getGlobalApp();
+    return Yii::app();
 }
 
 return $app;
