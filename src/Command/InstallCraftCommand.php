@@ -5,7 +5,7 @@ namespace CraftCli\Command;
 use CraftCli\Command\ExemptFromBootstrapInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Helper\ProgressBar;
-use ZipArchive;
+use PharData;
 
 class InstallCraftCommand extends BaseCommand implements ExemptFromBootstrapInterface
 {
@@ -59,12 +59,14 @@ class InstallCraftCommand extends BaseCommand implements ExemptFromBootstrapInte
      */
     protected function fire()
     {
+        // check terms and conditions
         if (! $this->option('terms') && ! $this->confirm('I agree to the terms and conditions (https://buildwithcraft.com/license)')) {
             $this->error('You did not agree to the terms and conditions (https://buildwithcraft.com/license)');
 
             return;
         }
 
+        // check if craft is already installed, and overwrite option
         if (file_exists(getcwd().'/craft') && ! $this->option('overwrite')) {
             $this->error('Craft is already installed here!');
 
@@ -75,28 +77,21 @@ class InstallCraftCommand extends BaseCommand implements ExemptFromBootstrapInte
             }
         }
 
-        $this->comment('Looking up the download url...');
+        $url = 'http://buildwithcraft.com/latest.tar.gz?accept_license=yes';
 
-        // get the latest download url from buildwithcraft.com
-        $contents = file_get_contents('https://buildwithcraft.com');
+        $this->comment('Downloading...');
 
-        if (! preg_match('#window.craftDownloadUrl = "(.*?)"#', $contents, $match)) {
-            $this->error('Could not find the download url at buildwithcraft.com.');
+        // create a temp file
+        $tempPath = tempnam(sys_get_temp_dir(), 'craft_installer_');
 
-            return;
-        }
+        $filePath = $tempPath.'.tar.gz';
 
-        $url = $match[1];
+        $tarPath = $tempPath.'.tar';
 
-        // replace hex chars with regular chars
-        $url = preg_replace_callback('/\\\\x([ABCDEF0-9]{2})/', function ($match) {
-            return chr(hexdec($match[1]));
-        }, $url);
+        // rename the temp file to .tar.gz (PharData requires that extension)
+        rename($tempPath, $filePath);
 
-        $this->comment('Downloading the installation zip file...');
-
-        $filePath = tempnam(sys_get_temp_dir(), 'craft_installer_');
-
+        // open the temp file for writing
         $fileHandle = fopen($filePath, 'wb');
 
         if ($fileHandle === false) {
@@ -105,19 +100,23 @@ class InstallCraftCommand extends BaseCommand implements ExemptFromBootstrapInte
             return;
         }
 
+        // download context so we can track download progress
         $downloadContext = stream_context_create(array(), array('notification' => array($this, 'showDownloadProgress')));
 
+        // open the download url for reading
         $downloadHandle = fopen($url, 'rb', false, $downloadContext);
 
         if ($downloadHandle === false) {
-            $this->error('Could not download installation zip.');
+            $this->error('Could not download installation file.');
 
             return;
         }
 
         while (! feof($downloadHandle)) {
             if (fwrite($fileHandle, fread($downloadHandle, 1024)) === false) {
-                return false;
+                $this->error('Could not write installation file to disk.');
+
+                return;
             }
         }
 
@@ -125,37 +124,29 @@ class InstallCraftCommand extends BaseCommand implements ExemptFromBootstrapInte
 
         if ($this->progressBar) {
             $this->progressBar->finish();
+
+            $this->line('');
         }
 
         fclose($fileHandle);
 
-        $this->line('');
+        $this->comment('Extracting...');
 
-        $this->comment('Unzipping the installation zip file...');
+        // create a tar file
+        (new PharData($filePath))->decompress();
 
-        if (class_exists('ZipArchive')) {
-            $zip = new ZipArchive();
+        // unarchive from the tar
+        (new PharData($tarPath))->extractTo(getcwd(), null, true);
 
-            $zip->open($filePath);
-
-            $zip->extractTo(getcwd());
-
-            $zip->close();
-
-            unset($zip);
-        } else {
-            if (! function_exists('system')) {
-                throw new \RuntimeException('You cannot run the system PHP function');
-            }
-
-            system(sprintf('unzip -o -d %s %s', escapeshellarg(getcwd()), escapeshellarg($filePath)));
-        }
-
+        // change the name of the public folder
         if ($public = $this->option('public')) {
             rename(getcwd().'/public', getcwd().'/'.$public);
         }
 
+        // remove the temp files
         unlink($filePath);
+
+        unlink($tarPath);
 
         $this->info('Installation complete!');
     }
