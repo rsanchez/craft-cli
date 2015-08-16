@@ -2,14 +2,16 @@
 
 namespace CraftCli\Command;
 
-use Illuminate\Console\Command;
+use Illuminate\Console\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class BaseCommand extends Command
+abstract class Command extends BaseCommand
 {
     /**
      * Execute the console command.
+     *
+     * Override laravel container dependency in Illuminate\Console\Command
      *
      * @param  \Symfony\Component\Console\Input\InputInterface  $input
      * @param  \Symfony\Component\Console\Output\OutputInterface  $output

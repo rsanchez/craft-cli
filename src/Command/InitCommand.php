@@ -2,9 +2,6 @@
 
 namespace CraftCli\Command;
 
-use CraftCli\Command\ExemptFromBootstrapInterface;
-use Illuminate\Console\Command;
-
 class InitCommand extends Command implements ExemptFromBootstrapInterface
 {
     /**
@@ -42,5 +39,4 @@ class InitCommand extends Command implements ExemptFromBootstrapInterface
 
         $this->info('Configuration file created.');
     }
-
 }

@@ -8,7 +8,7 @@ use Craft\ComponentType;
 use ReflectionMethod;
 use Craft\Craft;
 
-class ClearCacheCommand extends BaseCommand
+class ClearCacheCommand extends Command
 {
     /**
      * {@inheritdoc}

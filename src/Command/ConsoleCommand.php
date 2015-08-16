@@ -4,7 +4,7 @@ namespace CraftCli\Command;
 
 use Boris\Boris;
 
-class ConsoleCommand extends BaseCommand
+class ConsoleCommand extends Command
 {
     /**
      * {@inheritdoc}

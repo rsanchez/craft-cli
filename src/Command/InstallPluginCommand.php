@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
 use Exception;
 
-class InstallPluginCommand extends BaseCommand
+class InstallPluginCommand extends Command
 {
     /**
      * {@inheritdoc}

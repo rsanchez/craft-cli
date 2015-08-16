@@ -2,12 +2,11 @@
 
 namespace CraftCli\Command;
 
-use CraftCli\Command\ExemptFromBootstrapInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Handlebars\Handlebars;
 use Handlebars\Loader\FilesystemLoader;
 
-class GenerateHtaccessCommand extends BaseCommand implements ExemptFromBootstrapInterface
+class GenerateHtaccessCommand extends Command implements ExemptFromBootstrapInterface
 {
     /**
      * {@inheritdoc}

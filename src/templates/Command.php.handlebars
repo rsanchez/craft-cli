@@ -4,11 +4,11 @@
 namespace {{namespace}};
 {{/if}}
 
-use CraftCli\Command\BaseCommand;{{#if hasArguments}}
+use CraftCli\Command\Command;{{#if hasArguments}}
 use Symfony\Component\Console\Input\InputArgument;{{/if}}{{#if hasOptions}}
 use Symfony\Component\Console\Input\InputOption;{{/if}}
 
-class {{className}}Command extends BaseCommand
+class {{className}}Command extends Command
 {
     /**
      * {@inheritdoc}

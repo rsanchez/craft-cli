@@ -2,13 +2,12 @@
 
 namespace CraftCli\Command;
 
-use CraftCli\Command\ExemptFromBootstrapInterface;
 use CraftCli\Support\TarExtractor;
 use CraftCli\Support\Downloader\TempDownloader;
 use Symfony\Component\Console\Input\InputOption;
 use Exception;
 
-class InstallCraftCommand extends BaseCommand implements ExemptFromBootstrapInterface
+class InstallCraftCommand extends Command implements ExemptFromBootstrapInterface
 {
     /**
      * {@inheritdoc}

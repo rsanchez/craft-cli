@@ -5,7 +5,7 @@ namespace CraftCli\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use ReflectionClass;
 
-class ShowConfigCommand extends BaseCommand
+class ShowConfigCommand extends Command
 {
     /**
      * {@inheritdoc}

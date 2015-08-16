@@ -4,7 +4,7 @@ namespace CraftCli\Command;
 
 use Symfony\Component\Finder\Finder;
 
-class DbBackupCommand extends BaseCommand
+class DbBackupCommand extends Command
 {
     /**
      * {@inheritdoc}

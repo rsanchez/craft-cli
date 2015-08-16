@@ -2,12 +2,11 @@
 
 namespace CraftCli\Command;
 
-use CraftCli\Command\ExemptFromBootstrapInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Handlebars\Handlebars;
 use Handlebars\Loader\FilesystemLoader;
 
-class GenerateWebconfigCommand extends BaseCommand implements ExemptFromBootstrapInterface
+class GenerateWebconfigCommand extends Command implements ExemptFromBootstrapInterface
 {
     /**
      * {@inheritdoc}
