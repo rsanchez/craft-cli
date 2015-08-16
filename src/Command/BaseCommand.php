@@ -21,4 +21,18 @@ abstract class BaseCommand extends Command
 
         return $this->$method();
     }
+
+    /**
+     * Useful for supressing log messages
+     * @param  callable $callback
+     * @return void
+     */
+    protected function suppressOutput(callable $callback)
+    {
+        ob_start();
+
+        call_user_func($callback);
+
+        ob_end_clean();
+    }
 }
