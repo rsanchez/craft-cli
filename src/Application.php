@@ -81,7 +81,7 @@ class Application extends ConsoleApplication
         $this->add(new Command\GenerateCommandCommand());
         $this->add(new Command\GenerateWebconfigCommand());
         $this->add(new Command\GenerateHtaccessCommand());
-        $this->add(new Command\DbDumpCommand());
+        $this->add(new Command\DbBackupCommand());
         $this->add(new Command\InstallCraftCommand());
     }
 
