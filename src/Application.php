@@ -235,12 +235,6 @@ class Application extends ConsoleApplication
             $_SERVER = array_merge($_SERVER, $config['server']);
         }
 
-        // Assign variables to EE config
-        if (isset($config['assign_to_config']) && is_array($config['assign_to_config'])) {
-            global $assign_to_config;
-            $assign_to_config = $config['assign_to_config'];
-        }
-
         // Set the craft path
         if (isset($config['craft_path'])) {
             $this->craftPath = $config['craft_path'];
