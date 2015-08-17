@@ -17,8 +17,6 @@
         "illuminate/console": "~5.1",
         "symfony/event-dispatcher": "~2.7",
         "d11wtq/boris": "~1.0",
-        "xamin/handlebars.php": "0.10.*",
-        "symfony/finder": "~2.7",
-        "symfony/filesystem": "~2.7"
+        "xamin/handlebars.php": "0.10.*"
     }
 }

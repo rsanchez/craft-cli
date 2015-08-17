@@ -2,8 +2,6 @@
 
 namespace CraftCli\Command;
 
-use Symfony\Component\Finder\Finder;
-
 class DbBackupCommand extends Command
 {
     /**

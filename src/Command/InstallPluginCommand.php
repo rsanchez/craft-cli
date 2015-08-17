@@ -7,8 +7,8 @@ use CraftCli\Support\PluginReader;
 use CraftCli\Support\Downloader\TempDownloader;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Filesystem\Filesystem;
 use Exception;
+use CFileHelper;
 
 class InstallPluginCommand extends Command
 {
@@ -90,12 +90,8 @@ class InstallPluginCommand extends Command
 
         $extractionPath = sys_get_temp_dir().'craft_plugin_'.uniqid();
 
-        $fs = new Filesystem();
-
-        try {
-            $fs->mkdir($extractionPath);
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
+        if (! @mkdir($extractionPath)) {
+            $this->error('Could not create directory in system temp directory.');
 
             return;
         }
@@ -107,15 +103,19 @@ class InstallPluginCommand extends Command
         // determine the folder structure of the download in the temp path
         $pluginReader = new PluginReader($extractionPath);
 
-        if (! $pluginReader->read()) {
-            $this->error('Could not find a valid plugin in this download.');
+        try {
+            $pluginFile = $pluginReader->read();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
 
             return;
         }
 
+        $folderName = strtolower($pluginFile->getBasename('Plugin.php'));
+
         // check if craft is already installed, and overwrite option
-        if (file_exists(CRAFT_PLUGINS_PATH.$pluginReader->getFolderName()) && ! $this->option('overwrite')) {
-            $this->error(sprintf('%s is already installed!', $pluginReader->getFolderName()));
+        if (file_exists(CRAFT_PLUGINS_PATH.$folderName) && ! $this->option('overwrite')) {
+            $this->error(sprintf('%s is already installed!', $folderName));
 
             if (! $this->confirm('Do you want to overwrite?')) {
                 $this->info('Exited without installing.');
@@ -125,19 +125,10 @@ class InstallPluginCommand extends Command
         }
 
         // move the plugin from the temp folder to the craft installation
-        try {
-            $fs->rename($pluginReader->getPath(), CRAFT_PLUGINS_PATH.$pluginReader->getFolderName());
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-
-            return;
-        }
+        CFileHelper::copyDirectory($pluginFile->getPath(), CRAFT_PLUGINS_PATH.$folderName);
 
         // delete the temp files
-        try {
-            $fs->remove($extractionPath);
-        } catch (Exception $e) {
-        }
+        CFileHelper::removeDirectory($extractionPath);
 
         $this->info('Installation complete!');
     }

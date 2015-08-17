@@ -2,8 +2,9 @@
 
 namespace CraftCli\Support;
 
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Filesystem\Filesystem;
+use CFileHelper;
+use SplFileInfo;
+use Exception;
 
 class PluginReader
 {
@@ -12,18 +13,6 @@ class PluginReader
      * @var string
      */
     protected $directory;
-
-    /**
-     * Path to the folder containing the plugin file
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * The name of the folder for this plugin
-     * @var string
-     */
-    protected $folderName;
 
     /**
      * Constructor
@@ -36,44 +25,21 @@ class PluginReader
 
     /**
      * Locate a <PluginName>Plugin.php file in the specified directory
-     * @return bool
+     * @return SplFileInfo
      */
     public function read()
     {
-        $finder = new Finder();
+        $files = CFileHelper::findFiles($this->directory, array(
+            'fileTypes' => array('php'),
+            'exclude' => array('/vendor', '/tests'),
+        ));
 
-        $finder->files()
-            ->name('*Plugin.php')
-            ->ignoreUnreadableDirs()
-            ->exclude('vendor')
-            ->in($this->directory);
-
-        foreach ($finder as $file) {
-            $this->folderName = strtolower($file->getBasename('Plugin.php'));
-
-            $this->path = $file->getPath();
-
-            return true;
+        foreach ($files as $file) {
+            if (preg_match('/Plugin$/', basename($file, '.php'))) {
+                return new SplFileInfo($file);
+            }
         }
 
-        return false;
-    }
-
-    /**
-     * Get the folder name
-     * @return string
-     */
-    public function getFolderName()
-    {
-        return $this->folderName;
-    }
-
-    /**
-     * Get the plugin path
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
+        throw new Exception('Could not find a valid Craft plugin file.');
     }
 }

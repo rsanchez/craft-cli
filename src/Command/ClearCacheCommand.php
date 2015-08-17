@@ -2,7 +2,6 @@
 
 namespace CraftCli\Command;
 
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Input\InputOption;
 use Craft\ComponentType;
 use ReflectionMethod;
