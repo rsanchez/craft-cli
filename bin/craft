@@ -1,11 +1,4 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__.'/../../../autoload.php';
-
-$app = new CraftCli\Application();
-
-#$app->addThirdPartyCommands();
-$app->addUserDefinedCommands();
-
-$app->run();
+require __DIR__.'/../src/bootstrap.php';

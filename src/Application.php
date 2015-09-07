@@ -146,7 +146,7 @@ class Application extends ConsoleApplication
 
         $craftPath = $this->craftPath;
 
-        require __DIR__.'/bootstrap.php';
+        require __DIR__.'/bootstrap-craft2.php';
 
         $this->fire('bootstrap.after');
     }
