@@ -40,6 +40,12 @@ class Application extends ConsoleApplication
     protected $userDefinedCommands = array();
 
     /**
+     * A list of Command dirs
+     * @var array
+     */
+    protected $userDefinedCommandDirs = array();
+
+    /**
      * A list of callbacks to fire on events
      * @var array
      */
@@ -230,17 +236,12 @@ class Application extends ConsoleApplication
             unset($temp);
         }
 
-        // Spoof $_SERVER variables
-        if (isset($config['server']) && is_array($config['server'])) {
-            $_SERVER = array_merge($_SERVER, $config['server']);
-        }
-
         // Set the craft path
         if (isset($config['craft_path'])) {
             $this->craftPath = $config['craft_path'];
         }
 
-        // Session class needs this
+        // Craft 2 bootstrap requires a SERVER_NAME
         if (! isset($_SERVER['SERVER_NAME'])) {
             $_SERVER['SERVER_NAME'] = 'localhost';
         }
@@ -250,17 +251,8 @@ class Application extends ConsoleApplication
             $this->userDefinedCommands = $config['commands'];
         }
 
-        // Add event callbacks from the config
-        if (isset($config['callbacks']) && is_array($config['callbacks'])) {
-            $this->eventCallbacks = $config['callbacks'];
-        }
-
-        if (isset($config['addon_author_name'])) {
-            $this->addonAuthorName = $config['addon_author_name'];
-        }
-
-        if (isset($config['addon_author_url'])) {
-            $this->addonAuthorUrl = $config['addon_author_url'];
+        if (isset($config['commandDirs']) && is_array($config['commandDirs'])) {
+            $this->userDefinedCommandDirs = $config['commandDirs'];
         }
     }
 
@@ -301,46 +293,36 @@ class Application extends ConsoleApplication
     }
 
     /**
-     * Find any commands defined in addons
-     * and add them to the Application
-     */
-    public function addThirdPartyCommands()
-    {
-        if (! $this->canBeBootstrapped()) {
-            return;
-        }
-
-        if (! ee()->extensions->active_hook('CraftCli_add_commands')) {
-            return;
-        }
-
-        $commands = array();
-
-        $commands = ee()->extensions->call('CraftCli_add_commands', $commands, $this);
-
-        if (is_array($commands)) {
-            foreach ($commands as $command) {
-                if ($command instanceof SymfonyCommand) {
-                    $this->add($command);
-                }
-            }
-        }
-    }
-
-    /**
      * Find any user-defined Commands in the config
      * and add them to the Application
      * @return void
      */
     public function addUserDefinedCommands()
     {
-        foreach ($this->userDefinedCommands as $classname) {
-            // is it a callback or a string?
-            if (is_callable($classname)) {
-                $this->add(call_user_func($classname, $this));
-            } else {
-                $this->add(new $classname());
+        foreach ($this->userDefinedCommands as $class) {
+            $this->registerCommand($class);
+        }
+
+        foreach ($this->userDefinedCommandDirs as $commandNamespace => $commandDir) {
+            foreach ($this->findCommandsInDir($commandDir, $commandNamespace) as $class) {
+                $this->registerCommand($class);
             }
+        }
+    }
+
+    /**
+     * Add a command to the Application by class name
+     * or callback that return a Command class
+     * @param  string|callable $class class name or callback that returns a command
+     * @return void
+     */
+    public function registerCommand($class)
+    {
+        // is it a callback or a string?
+        if (is_callable($class)) {
+            $this->add(call_user_func($class, $this));
+        } else {
+            $this->add(new $class());
         }
     }
 
