@@ -12,7 +12,7 @@ class InstallCraftCommand extends Command implements ExemptFromBootstrapInterfac
     /**
      * {@inheritdoc}
      */
-    protected $name = 'install:craft';
+    protected $name = 'install';
 
     /**
      * {@inheritdoc}
