@@ -37,18 +37,6 @@ class GenerateCommandCommand extends Command implements ExemptFromBootstrapInter
                 InputOption::VALUE_OPTIONAL,
                 'Add a namespace to the class.',
             ),
-            array(
-                'arguments',
-                null,
-                InputOption::VALUE_NONE,
-                'Whether the command has arguments.',
-            ),
-            array(
-                'options',
-                null,
-                InputOption::VALUE_NONE,
-                'Whether the command has options.',
-            ),
         );
     }
 
@@ -78,8 +66,6 @@ class GenerateCommandCommand extends Command implements ExemptFromBootstrapInter
     {
         $commandName = $this->argument('command_name');
         $commandDescription = $this->option('description');
-        $hasArguments = $this->option('arguments');
-        $hasOptions = $this->option('options');
         $namespace = $this->option('namespace');
 
         // where to create the file, default to current directory
@@ -89,7 +75,7 @@ class GenerateCommandCommand extends Command implements ExemptFromBootstrapInter
         $path = rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 
         // split command into individual words
-        $words = preg_split('/[:-_]/', $commandName);
+        $words = preg_split('/[:_-]/', $commandName);
 
         // camel case
         $words = array_map(function ($word) {
@@ -104,16 +90,12 @@ class GenerateCommandCommand extends Command implements ExemptFromBootstrapInter
 
         $destination = $path.$className.'Command.php';
 
-        var_dump(realpath($destination));
-
         $handle = fopen($destination, 'w');
 
         $output = $handlebars->render('Command.php', array(
             'className' => $className,
             'commandName' => $commandName,
             'commandDescription' => $commandDescription,
-            'hasArguments' => $hasArguments,
-            'hasOptions' => $hasOptions,
             'namespace' => $namespace,
         ));
 

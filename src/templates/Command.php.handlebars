@@ -4,61 +4,43 @@
 namespace {{namespace}};
 {{/if}}
 
-use CraftCli\Command\Command;{{#if hasArguments}}
-use Symfony\Component\Console\Input\InputArgument;{{/if}}{{#if hasOptions}}
-use Symfony\Component\Console\Input\InputOption;{{/if}}
+use CraftCli\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class {{className}}Command extends Command
 {
     /**
      * {@inheritdoc}
      */
-    protected $name = '{{commandName}}';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $description = '{{commandDescription}}';{{#if hasArguments}}
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getArguments()
+    protected function configure()
     {
+        $this->setName('{{commandName}}');
+
+        $this->setDescription('{{commandDescription}}');
+
         /*
-        return array(
-            array(
-                'example', // name
-                InputArgument::OPTIONAL, // mode
-                'Describe what this argument does', // description
-                null, // default value
-            ),
+        $this->addArgument(
+            'name',
+            InputArgument::OPTIONAL,
+            'Who do you want to greet?'
+        );
+
+        $this->addOption(
+           'yell',
+           null,
+           InputOption::VALUE_NONE,
+           'If set, the task will yell in uppercase letters'
         );
         */
-    }{{/if}}{{#if hasOptions}}
+    }
 
     /**
      * {@inheritdoc}
      */
-    protected function getOptions()
-    {
-        /*
-        return array(
-            array(
-                'example', // name
-                'e', // shortcut
-                InputOption::VALUE_NONE, // mode
-                'Describe what this option does', // description
-                null, // default value
-            ),
-        );
-        */
-    }{{/if}}
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function fire()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         // do something here
     }
