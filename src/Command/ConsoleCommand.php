@@ -2,7 +2,7 @@
 
 namespace CraftCli\Command;
 
-use Boris\Boris;
+use Psy\Shell;
 
 class ConsoleCommand extends Command
 {
@@ -21,16 +21,8 @@ class ConsoleCommand extends Command
      */
     protected function fire()
     {
-        $requiredExtensions = array('readline', 'posix', 'pcntl');
+        $shell = new Shell();
 
-        foreach ($requiredExtensions as $extension) {
-            if (! extension_loaded($extension)) {
-                throw new \Exception(sprintf('PHP %s extension is required for this command.', $extension));
-            }
-        }
-
-        $boris = new Boris('> ');
-
-        $boris->start();
+        $shell->run();
     }
 }

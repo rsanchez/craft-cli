@@ -16,7 +16,7 @@
     "require": {
         "illuminate/console": "~5.1",
         "symfony/event-dispatcher": "~2.7",
-        "d11wtq/boris": "~1.0",
+        "psy/psysh": "~0.5.1",
         "xamin/handlebars.php": "0.10.*"
     }
 }
