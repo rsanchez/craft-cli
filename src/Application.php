@@ -46,12 +46,6 @@ class Application extends ConsoleApplication
     protected $userDefinedCommandDirs = array();
 
     /**
-     * A list of callbacks to fire on events
-     * @var array
-     */
-    protected $eventCallbacks = array();
-
-    /**
      * Path to the craft folder
      * @var string
      */
@@ -146,13 +140,9 @@ class Application extends ConsoleApplication
      */
     public function bootstrap()
     {
-        $this->fire('bootstrap.before');
-
         $craftPath = $this->craftPath;
 
         require __DIR__.'/bootstrap-craft2.php';
-
-        $this->fire('bootstrap.after');
     }
 
     /**
@@ -323,18 +313,6 @@ class Application extends ConsoleApplication
             $this->add(call_user_func($class, $this));
         } else {
             $this->add(new $class());
-        }
-    }
-
-    /**
-     * Fire an event callback
-     * @param  string $event
-     * @return void
-     */
-    public function fire($event)
-    {
-        if (isset($this->eventCallbacks[$event]) && is_callable($this->eventCallbacks[$event])) {
-            call_user_func($this->eventCallbacks[$event], $this);
         }
     }
 }
