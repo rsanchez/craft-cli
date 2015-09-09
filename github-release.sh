@@ -94,11 +94,11 @@ rm craft.phar
 
 cd $CRAFT_CLI_HOMEBREW_DIR
 
-perl -pi -w -e "s/download\/.*?\/craft\.phar/download\/$TAG\/craft.phar/g;" craft.rb
-perl -pi -w -e "s/version '.*?'/version '$TAG'/g;" craft.rb
-perl -pi -w -e "s/sha1 '.*?'/sha1 '$SHA'/g;" craft.rb
+perl -pi -w -e "s/download\/.*?\/craft\.phar/download\/$TAG\/craft.phar/g;" craft-cli.rb
+perl -pi -w -e "s/version '.*?'/version '$TAG'/g;" craft-cli.rb
+perl -pi -w -e "s/sha1 '.*?'/sha1 '$SHA'/g;" craft-cli.rb
 
-git add craft.rb
+git add craft-cli.rb
 
 git commit -m "Release $TAG"
 
