@@ -14,7 +14,6 @@ require $vendor_path.'autoload.php';
 
 $app = new CraftCli\Application();
 
-#$app->addThirdPartyCommands();
 $app->addUserDefinedCommands();
 
 $app->run();
