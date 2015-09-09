@@ -1,0 +1,23 @@
+{
+    "chmod": "0755",
+    "directories": ["src"],
+    "extract": false,
+    "files": [
+        "vendor/autoload.php"
+    ],
+    "finder": [
+        {
+            "name": "*.php",
+            "in": "vendor",
+            "exclude": ["tests", "Tests"]
+        },
+        {
+            "name": "sample.craft-cli.php",
+            "in": "./"
+        }
+    ],
+    "main": "bin/craft",
+    "output": "craft.phar",
+    "stub": "src/stub.php",
+    "web": false
+}
