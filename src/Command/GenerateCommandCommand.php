@@ -5,7 +5,7 @@ namespace CraftCli\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Handlebars\Handlebars;
-use Handlebars\Loader\FilesystemLoader;
+use CraftCli\Handlebars\Loader\FilesystemLoader;
 
 class GenerateCommandCommand extends Command implements ExemptFromBootstrapInterface
 {
