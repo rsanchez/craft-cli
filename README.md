@@ -146,7 +146,7 @@ eecil show:config db.user
 
 ## Custom Commands
 
-Craft CLI custom commands are [Laravel Console](http://laravel.com/docs/commands#building-a-command) Command objects, which extend [Symfony Console](http://symfony.com/doc/current/components/console/introduction.html) Command objects. You can add custom commands to your `.craft-cli.php` config file by adding the class name to the `commands` array, or by adding a folder path to the `commandDirs` array.
+Craft CLI custom commands are [Symfony Console](http://symfony.com/doc/current/components/console/introduction.html) Command objects. You can add custom commands to your `.craft-cli.php` config file by adding the class name to the `commands` array, or by adding a folder path to the `commandDirs` array.
 
 You can generate a custom command file using the `craft generate:command` command.
 
@@ -179,8 +179,6 @@ Then the command would be found in your `vendor/bin` folder, so you'd run this a
 ```
 vendor/bin/craft <your command>
 ```
-
-### Homebrew Installation
 
 ### Phar Installation
 
