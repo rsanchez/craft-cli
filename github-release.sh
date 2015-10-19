@@ -17,7 +17,7 @@
 TAG=$1
 
 if [[ -z $CRAFT_CLI_HOMEBREW_DIR ]]; then
-    CRAFT_CLI_HOMEBREW_DIR="../homebrew-craft-cli"
+    CRAFT_CLI_HOMEBREW_DIR="../../homebrew-craft-cli"
 fi
 
 if [[ -z $(which github-release) ]]; then
