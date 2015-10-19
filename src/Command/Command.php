@@ -7,6 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 
 /**
@@ -24,7 +25,7 @@ abstract class Command extends BaseCommand
     /**
      * The output interface implementation.
      *
-     * @var \Symfony\Component\Console\Output\OutputInterface
+     * @var \Symfony\Component\Console\Style\StyleInterface
      */
     protected $output;
 
@@ -80,7 +81,7 @@ abstract class Command extends BaseCommand
     {
         $this->input = $input;
 
-        $this->output = $output;
+        $this->output = new SymfonyStyle($input, $output);
 
         return parent::run($input, $output);
     }
