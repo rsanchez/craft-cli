@@ -5,6 +5,7 @@ namespace CraftCli\Command;
 use CraftCli\Support\TarExtractor;
 use CraftCli\Support\Downloader\TempDownloader;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use Exception;
 
 class InstallCraftCommand extends Command implements ExemptFromBootstrapInterface
@@ -18,6 +19,20 @@ class InstallCraftCommand extends Command implements ExemptFromBootstrapInterfac
      * {@inheritdoc}
      */
     protected $description = 'Install Craft to the current directory.';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getArguments()
+    {
+        return array(
+            array(
+                'path',
+                InputArgument::OPTIONAL,
+                'Specify an installation path. Defaults to the current working directory.',
+            ),
+        );
+    }
 
     /**
      * {@inheritdoc}
@@ -54,6 +69,14 @@ class InstallCraftCommand extends Command implements ExemptFromBootstrapInterfac
      */
     protected function fire()
     {
+        $path = rtrim($this->argument('path'), DIRECTORY_SEPARATOR) ?: getcwd();
+
+        if (! is_dir($path) && ! @mkdir($path, 0777, true)) {
+            $this->error(sprintf('Could not create directory %s.', $path));
+
+            return;
+        }
+
         // check terms and conditions
         if (! $this->option('terms') && ! $this->confirm('I agree to the terms and conditions (https://buildwithcraft.com/license)')) {
             $this->error('You did not agree to the terms and conditions (https://buildwithcraft.com/license)');
@@ -62,7 +85,7 @@ class InstallCraftCommand extends Command implements ExemptFromBootstrapInterfac
         }
 
         // check if craft is already installed, and overwrite option
-        if (file_exists(getcwd().'/craft') && ! $this->option('overwrite')) {
+        if (file_exists($path.'/craft') && ! $this->option('overwrite')) {
             $this->error('Craft is already installed here!');
 
             if (! $this->confirm('Do you want to overwrite?')) {
@@ -90,13 +113,13 @@ class InstallCraftCommand extends Command implements ExemptFromBootstrapInterfac
 
         $this->comment('Extracting...');
 
-        $tarExtractor = new TarExtractor($filePath, getcwd());
+        $tarExtractor = new TarExtractor($filePath, $path);
 
         $tarExtractor->extract();
 
         // change the name of the public folder
         if ($public = $this->option('public')) {
-            rename(getcwd().'/public', getcwd().'/'.$public);
+            rename($path.'/public', $path.'/'.$public);
         }
 
         $this->info('Installation complete!');
