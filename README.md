@@ -108,6 +108,12 @@ Install Craft to the current directory.
 craft install
 ```
 
+Create the specified directory and install Craft into it.
+
+```
+craft install path/to/directory
+```
+
 ### Install Plugin
 
 Install a plugin from a Github repository.
