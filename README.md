@@ -4,26 +4,20 @@ Command line interface for Craft CMS.
 
 ## Installation
 
-The recommended way to install Craft CLI is to install globally, via composer.
-
-```
-composer global require craft-cli/cli
-```
-
-Make sure your global composer installation is added to your PATH in your `~/.bash_profile` (or `~/.profile` or `~/.bashrc` or `~/.zshrc`) so that you may run the binary from the command line:
-
-```
-export PATH=~/.composer/vendor/bin:$PATH
-```
-
-Or if you are on Mac, you can install via [Homebrew](http://brew.sh/).
+If you are on Mac, you should install via [Homebrew](http://brew.sh/).
 
 ```
 brew tap rsanchez/homebrew-craft-cli
 brew install craft-cli
 ```
 
-See [Other Installation Methods](#other-installation-methods) for more ways to use Craft CLI.
+Otherwise, you should download the phar: https://github.com/rsanchez/craft-cli/releases/latest
+
+```
+php craft.phar <your:command>
+```
+
+See [Composer Installation](#composer-installation) for alternate ways to install.
 
 ## Commands
 
@@ -164,11 +158,21 @@ If this prints false, then you know that your CLI PHP is not configured to conne
 
 If you are running MAMP, for instance, and are using the stock Mac OS command-line PHP, you will not be able to connect out-of-the-box. You will need to edit your `/etc/php.ini` (or wherever your php.ini file is located) file and change the `mysql.default_socket` and/or the `mysqli.default_socket` to `/Applications/MAMP/tmp/mysql/mysql.sock`.
 
-## Other Installation Methods
+## Composer Installation
 
-### Per-Project Composer Installation
+You can install globally:
 
-You might want to install Craft CLI on a per project basis, rather than globally to your host system.
+```
+composer global require craft-cli/cli
+```
+
+Make sure your global composer installation is added to your PATH in your `~/.bash_profile` (or `~/.profile` or `~/.bashrc` or `~/.zshrc`) so that you may run the binary from the command line:
+
+```
+export PATH=~/.composer/vendor/bin:$PATH
+```
+
+Or, you can install on a per project basis, rather than globally to your host system.
 
 ```
 composer require craft-cli/cli
@@ -177,13 +181,5 @@ composer require craft-cli/cli
 Then the command would be found in your `vendor/bin` folder, so you'd run this at your command line:
 
 ```
-vendor/bin/craft <your command>
-```
-
-### Phar Installation
-
-Download the phar: https://github.com/rsanchez/craft-cli/releases/latest
-
-```
-php craft.phar <your command>
+vendor/bin/craft <your:command>
 ```
