@@ -64,7 +64,7 @@ class InstallPluginCommand extends Command
     {
         $repo = $this->argument('repo');
 
-        if (! preg_match('#^([\d\w_-]+)/([\d\w_-]+)$#', $repo)) {
+        if (! preg_match('#^([\d\w_-]+)/([\d\w\._-]+)$#', $repo)) {
             throw new Exception('Repository must be formatted: username/repo.');
         }
 
