@@ -40,7 +40,7 @@ Clear all Craft caches.
 craft clear:cache
 ```
 
-Select which cache(s) to clear from an interactive list
+Select which cache(s) to clear from an interactive list.
 
 ```
 craft clear:cache -s
@@ -67,16 +67,16 @@ craft db:backup
 Generate a custom command file in the specified directory.
 
 ```
-craft generate:command your:custom_comand ./commands/
+craft generate:command your:custom_command ./commands/
 ```
 
 Generate a custom command file with a namespace.
 
 ```
-craft generate:command --namespace="YourSite\Command" your:custom_comand ./src/YourSite/Command/
+craft generate:command --namespace="YourSite\Command" your:custom_command ./src/YourSite/Command/
 ```
 
-Generate a custom command with arguments and options/
+Generate a custom command with arguments and options.
 
 ```
 craft generate:command --options --arguments your_command ./commands/
@@ -116,7 +116,7 @@ craft install path/to/directory
 
 ### Install Plugin
 
-Install a plugin from a Github repository.
+Install a plugin from a GitHub repository.
 
 ```
 craft install:plugin pixelandtonic/ElementApi
@@ -138,10 +138,10 @@ Show all config items.
 craft show:config
 ```
 
-Show the specified config item
+Show the specified config item.
 
 ```
-eecil show:config db.user
+craft show:config db.user
 ```
 
 ## Custom Commands
