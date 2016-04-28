@@ -9,6 +9,7 @@ use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\ConsoleEvents;
+use ReflectionClass;
 
 class Application extends ConsoleApplication
 {
@@ -299,6 +300,49 @@ class Application extends ConsoleApplication
                 $this->registerCommand($class);
             }
         }
+    }
+
+    /**
+     * Get a list of Symfony Console Commands classes
+     * in the specified directory
+     *
+     * @param  string $dir
+     * @param  string $namespace
+     * @return array
+     */
+    public function findCommandsInDir($dir, $namespace = null)
+    {
+        $commands = array();
+
+        if ($namespace) {
+            $namespace = rtrim($namespace, '\\').'\\';
+        }
+
+        $dir = rtrim($dir, '/');
+
+        $files = glob($dir.'/*.php');
+
+        foreach ($files as $file) {
+            $class = $namespace.basename($file, '.php');
+
+            if (! class_exists($class)) {
+                continue;
+            }
+
+            $reflectionClass = new ReflectionClass($class);
+
+            if (! $reflectionClass->isInstantiable()) {
+                continue;
+            }
+
+            if (! $reflectionClass->isSubclassOf('Symfony\\Component\\Console\\Command\\Command')) {
+                continue;
+            }
+
+            $commands[] = $class;
+        }
+
+        return $commands;
     }
 
     /**
