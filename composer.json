@@ -14,8 +14,8 @@
         "bin/craft"
     ],
     "require": {
-        "symfony/console": "~2.7,~3.0",
-        "symfony/event-dispatcher": "~2.7,~3.0",
+        "symfony/console": "~2.7|~3.0",
+        "symfony/event-dispatcher": "~2.7|~3.0",
         "psy/psysh": "~0.5.1",
         "xamin/handlebars.php": "0.10.*"
     }
