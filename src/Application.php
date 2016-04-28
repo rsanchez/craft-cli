@@ -83,6 +83,7 @@ class Application extends ConsoleApplication
         $this->add(new Command\InstallCraftCommand());
         $this->add(new Command\InstallPluginCommand());
         $this->add(new Command\ClearCacheCommand());
+        $this->add(new Command\TailCommand());
     }
 
     /**
