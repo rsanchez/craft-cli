@@ -3,9 +3,8 @@
 namespace CraftCli\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
-use ReflectionClass;
 
-class ShowConfigCommand extends Command
+class TailCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -43,8 +42,7 @@ class ShowConfigCommand extends Command
 
         $logPath = "{$runtimePath}{$log}.log";
 
-        if ( ! file_exists($runtimePath))
-        {
+        if (! file_exists($runtimePath)) {
             $this->error('Invalid log.');
             return;
         }
