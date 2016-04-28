@@ -20,11 +20,16 @@ class FilesystemLoader extends Loader
     protected function sanitizeDirectory($dir)
     {
         $isPhar = preg_match('#^phar:///(.+)$#', $dir, $match);
+        $isAbsolute = strncmp('/', $dir, 1) === 0;
         $prefix = '';
 
         if ($isPhar) {
             $prefix = 'phar:///';
             $dir = $match[1];
+        }
+
+        if ($isAbsolute) {
+            $prefix = '/';
         }
 
         return $prefix.rtrim($this->normalizePath($dir), '/');
