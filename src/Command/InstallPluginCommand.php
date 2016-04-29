@@ -88,7 +88,7 @@ class InstallPluginCommand extends Command
 
         $this->comment('Extracting...');
 
-        $extractionPath = sys_get_temp_dir().'craft_plugin_'.uniqid();
+        $extractionPath = rtrim(sys_get_temp_dir(), '/').'/craft_plugin_'.uniqid();
 
         if (! @mkdir($extractionPath)) {
             $this->error('Could not create directory in system temp directory.');
