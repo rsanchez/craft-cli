@@ -159,24 +159,13 @@ class Application extends ConsoleApplication
      */
     protected function getEnvironmentOption()
     {
-        $environment = null;
+        $definition = new InputDefinition();
 
-        try {
-            $definition = new InputDefinition();
+        $definition->addOption(new InputOption('environment', null, InputOption::VALUE_REQUIRED));
 
-            $definition->addOption(new InputOption('environment', null, InputOption::VALUE_REQUIRED));
+        $input = new Console\GlobalArgvInput(null, $definition);
 
-            $input = new ArgvInput(null, $definition);
-
-            $environment = $input->getOption('environment');
-        } catch(RuntimeException $e) {
-            // ignore these errors, otherwise re-throw it
-            if (! preg_match('/^Too many arguments\.$|does not exist\.$/', $e->getMessage())) {
-                throw $e;
-            }
-        }
-
-        return $environment;
+        return $input->getOption('environment');
     }
 
     /**
@@ -251,12 +240,7 @@ class Application extends ConsoleApplication
         $environment = empty($config['environment']) ? $this->getEnvironmentOption() : $config['environment'];
 
         if ($environment) {
-            $_SERVER['SERVER_NAME'] = $environment;
-        }
-
-        // Craft 2 bootstrap requires a SERVER_NAME
-        if (! isset($_SERVER['SERVER_NAME'])) {
-            $_SERVER['SERVER_NAME'] = 'localhost';
+            define('CRAFT_ENVIRONMENT', $environment);
         }
 
         // Add user-defined commands from config
