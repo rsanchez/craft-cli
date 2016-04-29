@@ -3,6 +3,7 @@
 namespace CraftCli\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Question\Question;
@@ -57,6 +58,9 @@ abstract class Command extends BaseCommand
         if ($this->description) {
             $this->setDescription($this->description);
         }
+
+        // add default options
+        $this->addOption('environment', null, InputOption::VALUE_REQUIRED, 'Craft environment name');
 
         // We will loop through all of the arguments and options for the command and
         // set them all on the base command instance. This specifies what can get

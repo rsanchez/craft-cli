@@ -22,6 +22,13 @@ return array(
     'craft_path' => __DIR__.'/craft',
 
     /**
+     * Craft environment
+     *
+     * The server name of your craft environment.
+     */
+    'environment' => null,
+
+    /**
      * Custom commands
      *
      * An array of Command class names of

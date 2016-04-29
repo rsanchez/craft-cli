@@ -5,11 +5,17 @@ namespace CraftCli;
 use CraftCli\Command\ExemptFromBootstrapInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\ArgvInput;
 use ReflectionClass;
+use RuntimeException;
 
 class Application extends ConsoleApplication
 {
@@ -148,20 +154,29 @@ class Application extends ConsoleApplication
     }
 
     /**
-     * Get the environment from ENV PHP constant,
-     * defined in config.php, or an environment
-     * variable called ENV
+     * Get the environment from the --environment option
      * @return string|null
      */
-    public function getEnvironment()
+    protected function getEnvironmentOption()
     {
-        if (defined('ENV')) {
-            return ENV;
-        } elseif (getenv('ENV')) {
-            return getenv('ENV');
+        $environment = null;
+
+        try {
+            $definition = new InputDefinition();
+
+            $definition->addOption(new InputOption('environment', null, InputOption::VALUE_REQUIRED));
+
+            $input = new ArgvInput(null, $definition);
+
+            $environment = $input->getOption('environment');
+        } catch(RuntimeException $e) {
+            // ignore these errors, otherwise re-throw it
+            if (! preg_match('/^Too many arguments\.$|does not exist\.$/', $e->getMessage())) {
+                throw $e;
+            }
         }
 
-        return null;
+        return $environment;
     }
 
     /**
@@ -231,6 +246,12 @@ class Application extends ConsoleApplication
         // Set the craft path
         if (isset($config['craft_path'])) {
             $this->craftPath = $config['craft_path'];
+        }
+
+        $environment = empty($config['environment']) ? $this->getEnvironmentOption() : $config['environment'];
+
+        if ($environment) {
+            $_SERVER['SERVER_NAME'] = $environment;
         }
 
         // Craft 2 bootstrap requires a SERVER_NAME
