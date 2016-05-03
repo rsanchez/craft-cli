@@ -59,6 +59,12 @@ class Application extends ConsoleApplication
     protected $craftPath = 'craft';
 
     /**
+     * Path to the Composer vendor folder
+     * @var string
+     */
+    protected $vendorPath;
+
+    /**
      * Author name for generated addons
      * @var string
      */
@@ -289,6 +295,65 @@ class Application extends ConsoleApplication
         return $this->addonAuthorUrl;
     }
 
+
+    /**
+     * Find any Command plugins installed via composer
+     * and add them to the Application
+     * @return void
+     */
+    public function addComposerCommands()
+    {
+        if (! $this->vendorPath) {
+            return;
+        }
+
+        $installedJsonPath = rtrim($this->vendorPath, '/').'/composer/installed.json';
+
+        if (! file_exists($installedJsonPath)) {
+            return;
+        }
+
+        $installedJsonContents = file_get_contents($installedJsonPath);
+
+        if (! $installedJsonContents) {
+            return;
+        }
+
+        $installed = json_decode($installedJsonContents, true);
+
+        if (! $installed || ! is_array($installed)) {
+            return;
+        }
+
+        $plugins = array_filter($installed, function ($package) {
+            return ! empty($package['extra']['craft-cli']['commands']) || ! empty($package['extra']['craft-cli']['commandDirs']);
+        });
+
+        foreach ($plugins as $package) {
+            $namespace = isset($package['extra']['craft-cli']['namespace'])
+                ? rtrim($package['extra']['craft-cli']['namespace'], '\\').'\\'
+                : null;
+
+            if (! empty($package['extra']['craft-cli']['commandDirs'])) {
+                foreach ($package['extra']['craft-cli']['commandDirs'] as $commandDir) {
+                    $path = rtrim($this->vendorPath, '/').'/'.$package['name'].'/'.$commandDir;
+
+                    $commands = $this->findCommandsInDir($path, $namespace);
+
+                    foreach ($commands as $command) {
+                        $this->registerCommand($command);
+                    }
+                }
+            }
+
+            if (! empty($package['extra']['craft-cli']['commands'])) {
+                foreach ($package['extra']['craft-cli']['commands'] as $command) {
+                    $this->registerCommand($namespace.$command);
+                }
+            }
+        }
+    }
+
     /**
      * Find any user-defined Commands in the config
      * and add them to the Application
@@ -348,6 +413,15 @@ class Application extends ConsoleApplication
         }
 
         return $commands;
+    }
+
+    /**
+     * Set the path to the Composer vendor folder
+     * @param string $vendorPath
+     */
+    public function setVendorPath($vendorPath)
+    {
+        $this->vendorPath = $vendorPath;
     }
 
     /**
