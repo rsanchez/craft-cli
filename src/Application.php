@@ -161,6 +161,7 @@ class Application extends ConsoleApplication
 
     /**
      * Get the environment from the --environment option
+     * or from the CRAFT_ENVIRONMENT env variable
      * @return string|null
      */
     protected function getEnvironmentOption()
@@ -171,7 +172,7 @@ class Application extends ConsoleApplication
 
         $input = new Console\GlobalArgvInput(null, $definition);
 
-        return $input->getOption('environment');
+        return $input->getOption('environment') ?: getenv('CRAFT_ENVIRONMENT');
     }
 
     /**
