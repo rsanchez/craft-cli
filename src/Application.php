@@ -295,13 +295,76 @@ class Application extends ConsoleApplication
         return $this->addonAuthorUrl;
     }
 
+    /**
+     * Find any Command plugins installed via composer
+     * or supplied by the main composer.json
+     * and add them to the Application
+     * @return void
+     */
+    public function addComposerCommands()
+    {
+        $this->addComposerPlugins();
+        $this->addCustomComposerCommands();
+    }
+
+    /**
+     * Find any Command plugins upplied by the main composer.json
+     * and add them to the Application
+     * @return void
+     */
+    public function addCustomComposerCommands()
+    {
+        if (! $this->vendorPath) {
+            return;
+        }
+
+        $jsonPath = rtrim($this->vendorPath, '/').'/../composer.json';
+
+        if (! file_exists($jsonPath)) {
+            return;
+        }
+
+        $jsonContents = file_get_contents($jsonPath);
+
+        if (! $jsonContents) {
+            return;
+        }
+
+        $package = json_decode($jsonContents, true);
+
+        if (! isset($package['extra']['craft-cli'])) {
+            return;
+        }
+
+        $namespace = isset($package['extra']['craft-cli']['namespace'])
+            ? rtrim($package['extra']['craft-cli']['namespace'], '\\').'\\'
+            : null;
+
+        if (! empty($package['extra']['craft-cli']['commandDirs'])) {
+            foreach ($package['extra']['craft-cli']['commandDirs'] as $commandDir) {
+                $path = rtrim($this->vendorPath, '/').'/'.$package['name'].'/'.$commandDir;
+
+                $commands = $this->findCommandsInDir($path, $namespace);
+
+                foreach ($commands as $command) {
+                    $this->registerCommand($command);
+                }
+            }
+        }
+
+        if (! empty($package['extra']['craft-cli']['commands'])) {
+            foreach ($package['extra']['craft-cli']['commands'] as $command) {
+                $this->registerCommand($namespace.$command);
+            }
+        }
+    }
 
     /**
      * Find any Command plugins installed via composer
      * and add them to the Application
      * @return void
      */
-    public function addComposerCommands()
+    public function addComposerPlugins()
     {
         if (! $this->vendorPath) {
             return;
