@@ -4,7 +4,7 @@ namespace CraftCli\Console;
 
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputDefinition;
-use Symfony\Component\Console\Exception\RuntimeException;
+use RuntimeException;
 
 class GlobalArgvInput extends ArgvInput
 {
