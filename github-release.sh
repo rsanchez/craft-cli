@@ -87,7 +87,7 @@ github-release release --user "rsanchez" --repo "craft-cli" --tag "$TAG"
 github-release upload --user "rsanchez" --repo "craft-cli" --tag "$TAG" --name craft.phar --file craft.phar
 
 # get sha hash of phar
-SHA=$(openssl sha1 craft.phar | sed 's/SHA1(craft\.phar)= //g')
+SHA=$(shasum -a 256 craft.phar | cut -d ' ' -f 1)
 
 # delete phar
 rm craft.phar
@@ -96,7 +96,8 @@ cd $CRAFT_CLI_HOMEBREW_DIR
 
 perl -pi -w -e "s/download\/.*?\/craft\.phar/download\/$TAG\/craft.phar/g;" craft-cli.rb
 perl -pi -w -e "s/version '.*?'/version '$TAG'/g;" craft-cli.rb
-perl -pi -w -e "s/sha1 '.*?'/sha1 '$SHA'/g;" craft-cli.rb
+perl -pi -w -e "s/sha1 '.*?'/sha256 '$SHA'/g;" craft-cli.rb
+perl -pi -w -e "s/sha256 '.*?'/sha256 '$SHA'/g;" craft-cli.rb
 
 git add craft-cli.rb
 
