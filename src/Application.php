@@ -342,7 +342,7 @@ class Application extends ConsoleApplication
 
         if (! empty($package['extra']['craft-cli']['commandDirs'])) {
             foreach ($package['extra']['craft-cli']['commandDirs'] as $commandDir) {
-                $path = rtrim($this->vendorPath, '/').'/'.$package['name'].'/'.$commandDir;
+                $path = rtrim($this->vendorPath, '/').'/../'.$commandDir;
 
                 $commands = $this->findCommandsInDir($path, $namespace);
 
