@@ -5,8 +5,6 @@ namespace {{namespace}};
 {{/if}}
 
 use CraftCli\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -15,32 +13,50 @@ class {{className}}Command extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected $name = '{{commandName}}';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $description = '{{commandDescription}}';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getArguments()
     {
-        $this->setName('{{commandName}}');
-
-        $this->setDescription('{{commandDescription}}');
-
-        /*
-        $this->addArgument(
-            'name',
-            InputArgument::OPTIONAL,
-            'Who do you want to greet?'
+        return array(
+            /*
+            array(
+                '',//name
+                InputArgument::OPTIONAL,
+                '',//description
+            ),
+            */
         );
-
-        $this->addOption(
-           'yell',
-           null,
-           InputOption::VALUE_NONE,
-           'If set, the task will yell in uppercase letters'
-        );
-        */
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function getOptions()
+    {
+        return array(
+            /*
+            array(
+                '',//name
+                '',//alias
+                InputOption::VALUE_OPTIONAL,
+                '',//description
+            ),
+            */
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function fire()
     {
         // do something here
     }
