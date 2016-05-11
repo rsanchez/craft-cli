@@ -10,6 +10,7 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Command\Command as BaseCommand;
+use Craft\ConsoleApp as Craft;
 
 /**
  * Based on Illuminate\Console\Command
@@ -43,6 +44,12 @@ abstract class Command extends BaseCommand
      * @var string
      */
     protected $description;
+
+    /**
+     * Craft app instance
+     * @var \Craft\ConsoleApp
+     */
+    protected $craft;
 
     /**
      * Specify the arguments and options on the command.
@@ -109,6 +116,15 @@ abstract class Command extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         return $this->fire();
+    }
+
+    /**
+     * Set Craft app instance
+     * @param \Craft\ConsoleApp $craft
+     */
+    public function setCraft(Craft $craft)
+    {
+        $this->craft = $craft;
     }
 
     /**

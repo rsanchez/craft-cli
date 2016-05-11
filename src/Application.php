@@ -3,6 +3,7 @@
 namespace CraftCli;
 
 use CraftCli\Command\ExemptFromBootstrapInterface;
+use CraftCli\Command\Command;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputOption;
@@ -119,7 +120,11 @@ class Application extends ConsoleApplication
                 throw new \Exception('Your craft path could not be found.');
             }
 
-            $this->bootstrap();
+            $craft = $this->bootstrap();
+
+            if ($command instanceof Command) {
+                $command->setCraft($craft);
+            }
         }
     }
 
@@ -150,13 +155,13 @@ class Application extends ConsoleApplication
 
     /**
      * Boot up craft
-     * @return void
+     * @return \Craft\ConsoleApp
      */
     public function bootstrap()
     {
         $craftPath = $this->craftPath;
 
-        require __DIR__.'/bootstrap-craft2.php';
+        return require __DIR__.'/bootstrap-craft2.php';
     }
 
     /**
