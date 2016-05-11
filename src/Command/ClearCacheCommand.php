@@ -41,7 +41,7 @@ class ClearCacheCommand extends Command
     {
         $caches = '*';
 
-        $tool = craft()->components->getComponentByTypeAndClass(ComponentType::Tool, 'ClearCaches');
+        $tool = $this->craft->getComponent('components')->getComponentByTypeAndClass(ComponentType::Tool, 'ClearCaches');
 
         if ($this->option('select')) {
             $reflectionMethod = new ReflectionMethod($tool, '_getFolders');

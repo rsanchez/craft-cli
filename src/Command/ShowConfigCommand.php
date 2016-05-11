@@ -73,9 +73,9 @@ class ShowConfigCommand extends Command
             }
 
             if ($file) {
-                $value = craft()->config->get($name, $file);
+                $value = $this->craft->getComponent('config')->get($name, $file);
             } else {
-                $value = craft()->config->get($name);
+                $value = $this->craft->getComponent('config')->get($name);
             }
 
             $this->line($this->dump($value));
@@ -87,7 +87,7 @@ class ShowConfigCommand extends Command
 
         $rows = array();
 
-        $configService = craft()->config;
+        $configService = $this->craft->getComponent('config');
 
         $reflectionClass = new ReflectionClass($configService);
 

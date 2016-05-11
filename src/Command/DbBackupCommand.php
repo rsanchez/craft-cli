@@ -19,7 +19,7 @@ class DbBackupCommand extends Command
      */
     protected function fire()
     {
-        $path = craft()->db->backup();
+        $path = $this->craft->getComponent('db')->backup();
 
         $path = preg_replace('/^'.preg_quote(getcwd().DIRECTORY_SEPARATOR, '/').'/', '.'.DIRECTORY_SEPARATOR, $path);
 
