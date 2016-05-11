@@ -350,14 +350,16 @@ abstract class Command extends BaseCommand
     /**
      * Useful for supressing log messages
      * @param  callable $callback
-     * @return void
+     * @return mixed
      */
     protected function suppressOutput(callable $callback)
     {
         ob_start();
 
-        call_user_func($callback);
+        $return = call_user_func($callback);
 
         ob_end_clean();
+
+        return $return;
     }
 }
