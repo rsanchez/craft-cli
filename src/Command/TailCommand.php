@@ -38,7 +38,7 @@ class TailCommand extends Command
     {
         $log = $this->argument('log');
 
-        $runtimePath = CRAFT_STORAGE_PATH.'runtime/';
+        $runtimePath = CRAFT_STORAGE_PATH.'runtime/logs/';
 
         $logPath = "{$runtimePath}{$log}.log";
 
