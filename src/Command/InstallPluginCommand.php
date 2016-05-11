@@ -114,7 +114,7 @@ class InstallPluginCommand extends Command
         $folderName = strtolower($pluginFile->getBasename('Plugin.php'));
 
         // check if craft is already installed, and overwrite option
-        if (file_exists(CRAFT_PLUGINS_PATH.$folderName) && ! $this->option('overwrite')) {
+        if (file_exists($this->pluginsPath.$folderName) && ! $this->option('overwrite')) {
             $this->error(sprintf('%s is already installed!', $folderName));
 
             if (! $this->confirm('Do you want to overwrite?')) {
@@ -125,7 +125,7 @@ class InstallPluginCommand extends Command
         }
 
         // move the plugin from the temp folder to the craft installation
-        CFileHelper::copyDirectory($pluginFile->getPath(), CRAFT_PLUGINS_PATH.$folderName);
+        CFileHelper::copyDirectory($pluginFile->getPath(), $this->pluginsPath.$folderName);
 
         // delete the temp files
         CFileHelper::removeDirectory($extractionPath);
