@@ -124,6 +124,13 @@ class Application extends ConsoleApplication
 
             if ($command instanceof BaseCommand) {
                 $command->setCraft($craft);
+                $command->setAppPath(CRAFT_APP_PATH);
+                $command->setBasePath(CRAFT_BASE_PATH);
+                $command->setConfigPath(CRAFT_CONFIG_PATH);
+                $command->setPluginsPath(CRAFT_PLUGINS_PATH);
+                $command->setStoragePath(CRAFT_STORAGE_PATH);
+                $command->setTemplatesPath(CRAFT_TEMPLATES_PATH);
+                $command->setTranslationsPath(CRAFT_TRANSLATIONS_PATH);
             }
         }
     }

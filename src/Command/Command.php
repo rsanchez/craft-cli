@@ -52,6 +52,48 @@ abstract class Command extends BaseCommand
     protected $craft;
 
     /**
+     * Craft app path
+     * @var string
+     */
+    protected $appPath;
+
+    /**
+     * Craft base path
+     * @var string
+     */
+    protected $basePath;
+
+    /**
+     * Craft config path
+     * @var string
+     */
+    protected $configPath;
+
+    /**
+     * Craft storage path
+     * @var string
+     */
+    protected $storagePath;
+
+    /**
+     * Craft plugins path
+     * @var string
+     */
+    protected $pluginsPath;
+
+    /**
+     * Craft templates path
+     * @var string
+     */
+    protected $templatesPath;
+
+    /**
+     * Craft translations path
+     * @var string
+     */
+    protected $translationsPath;
+
+    /**
      * Specify the arguments and options on the command.
      *
      * @return void
@@ -125,6 +167,69 @@ abstract class Command extends BaseCommand
     public function setCraft(Craft $craft)
     {
         $this->craft = $craft;
+    }
+
+    /**
+     * Set Craft app path
+     * @param string $path
+     */
+    public function setAppPath($path)
+    {
+        $this->appPath = $path;
+    }
+
+    /**
+     * Set Craft base path
+     * @param string $path
+     */
+    public function setBasePath($path)
+    {
+        $this->basePath = $path;
+    }
+
+    /**
+     * Set Craft config path
+     * @param string $path
+     */
+    public function setConfigPath($path)
+    {
+        $this->configPath = $path;
+    }
+
+    /**
+     * Set Craft storage path
+     * @param string $path
+     */
+    public function setStoragePath($path)
+    {
+        $this->storagePath = $path;
+    }
+
+    /**
+     * Set Craft plugins path
+     * @param string $path
+     */
+    public function setPluginsPath($path)
+    {
+        $this->pluginsPath = $path;
+    }
+
+    /**
+     * Set Craft templates path
+     * @param string $path
+     */
+    public function setTemplatesPath($path)
+    {
+        $this->templatesPath = $path;
+    }
+
+    /**
+     * Set Craft translations path
+     * @param string $path
+     */
+    public function setTranslationsPath($path)
+    {
+        $this->translationsPath = $path;
     }
 
     /**
