@@ -3,7 +3,7 @@
 namespace CraftCli;
 
 use CraftCli\Command\ExemptFromBootstrapInterface;
-use CraftCli\Command\Command;
+use CraftCli\Command\Command as BaseCommand;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputOption;
@@ -122,7 +122,7 @@ class Application extends ConsoleApplication
 
             $craft = $this->bootstrap();
 
-            if ($command instanceof Command) {
+            if ($command instanceof BaseCommand) {
                 $command->setCraft($craft);
             }
         }
