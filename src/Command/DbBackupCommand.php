@@ -21,9 +21,7 @@ class DbBackupCommand extends Command
     {
         $db = $this->craft->getComponent('db');
 
-        $path = $this->suppressOutput(function () use ($db) {
-            return $db->backup();
-        });
+        $path = $this->suppressOutput([$db, 'backup']);
 
         $path = preg_replace('/^'.preg_quote(getcwd().DIRECTORY_SEPARATOR, '/').'/', '.'.DIRECTORY_SEPARATOR, $path);
 
