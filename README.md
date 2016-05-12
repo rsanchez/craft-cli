@@ -31,6 +31,7 @@ See [Composer Installation](#composer-installation) for alternate ways to instal
 - [`install:plugin`](#install-plugin)
 - [`list`](#list)
 - [`show:config`](#show-config)
+- [`tail`](#tail)
 
 ### Clear Cache
 
@@ -142,6 +143,14 @@ Show the specified config item.
 
 ```
 craft show:config db.user
+```
+
+### Tail
+
+Show a tail of craft.log
+
+```
+craft tail
 ```
 
 ## Custom Commands
