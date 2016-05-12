@@ -19,6 +19,18 @@ php craft.phar <your:command>
 
 See [Composer Installation](#composer-installation) for alternate ways to install.
 
+## Usage
+
+If you are using a multi-environment config, you must specify your environment either using the `--environment=` flag on your commands, or set the `CRAFT_ENVIRONMENT` env variable.
+
+```
+craft --environment="mysite.dev" show:config
+```
+
+```
+CRAFT_ENVIRONMENT="mysite.dev" craft show:config
+```
+
 ## Commands
 
 - [`clear:cache`](#clear-cache)
