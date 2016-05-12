@@ -25,6 +25,7 @@ See [Composer Installation](#composer-installation) for alternate ways to instal
 - [`console`](#console)
 - [`db:backup`](#db-backup)
 - [`db:pull`](#db-pull)
+- [`db:push`](#db-push)
 - [`generate:command`](#generate-command)
 - [`help`](#help)
 - [`init`](#init)
@@ -67,6 +68,14 @@ craft db:backup
 ### DB Pull
 
 Pull a remote database to the local database.
+
+```
+craft db:pull --ssh-host=your.remote.server.com --ssh-user=yourUserName --force yourRemoteEnvironmentName
+```
+
+### DB Push
+
+Push your local remote database to a remote database.
 
 ```
 craft db:pull --ssh-host=your.remote.server.com --ssh-user=yourUserName --force yourRemoteEnvironmentName
