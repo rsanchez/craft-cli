@@ -94,6 +94,8 @@ class Application extends ConsoleApplication
         $this->add(new Command\ShowConfigCommand());
         $this->add(new Command\GenerateCommandCommand());
         $this->add(new Command\DbBackupCommand());
+        $this->add(new Command\DbPullCommand());
+        $this->add(new Command\DbPushCommand());
         $this->add(new Command\InstallCraftCommand());
         $this->add(new Command\InstallPluginCommand());
         $this->add(new Command\ClearCacheCommand());
