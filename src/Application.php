@@ -124,6 +124,7 @@ class Application extends ConsoleApplication
 
             if ($command instanceof BaseCommand) {
                 $command->setCraft($craft);
+                $command->setEnvironment(CRAFT_ENVIRONMENT);
                 $command->setAppPath(CRAFT_APP_PATH);
                 $command->setBasePath(CRAFT_BASE_PATH);
                 $command->setConfigPath(CRAFT_CONFIG_PATH);

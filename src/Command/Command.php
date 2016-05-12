@@ -170,6 +170,15 @@ abstract class Command extends BaseCommand
     }
 
     /**
+     * Set Craft environment
+     * @param string $environment
+     */
+    public function setEnvironment($environment)
+    {
+        $this->environment = $environment;
+    }
+
+    /**
      * Set Craft app path
      * @param string $path
      */
