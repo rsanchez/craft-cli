@@ -7,6 +7,7 @@ use CraftCli\Support\MysqlCommand;
 use CraftCli\Support\MysqlDumpCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Exception;
 
 class DbPullCommand extends Command
 {
@@ -20,9 +21,28 @@ class DbPullCommand extends Command
      */
     protected $description = 'Pull a database from a remote server';
 
+    /**
+     * Remote database credentials
+     * @var array
+     */
     protected $remoteCredentials;
+
+    /**
+     * Local database credentials
+     * @var array
+     */
     protected $localCredentials;
+
+    /**
+     * SSH credentials
+     * @var array
+     */
     protected $sshCredentials;
+
+    /**
+     * Debugging
+     * @var bool
+     */
     protected $debug;
 
     /**
@@ -59,7 +79,7 @@ class DbPullCommand extends Command
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
-                'Force pull without confirmation prompt.',
+                'Overwrite database without confirmation prompt.',
             ),
             array(
                 'no-gzip',
@@ -91,16 +111,16 @@ class DbPullCommand extends Command
     }
 
     /**
-     * {@inheritdoc}
+     * Validate environments/config
+     * @throws \Exception
+     * @return void
      */
-    protected function fire()
+    protected function validate()
     {
         $dbConfig = require $this->configPath.'db.php';
 
         if (! isset($dbConfig['*'])) {
-            $this->error('Could not find a multi-environment configuration in your db.php.');
-
-            return;
+            throw new Exception('Could not find a multi-environment configuration in your db.php.');
         }
 
         $remoteEnvironment = $this->argument('remote-environment');
@@ -118,7 +138,7 @@ class DbPullCommand extends Command
         $this->debug = $this->option('debug');
 
         if (! $this->debug && ! $this->option('force') && ! $this->confirm('This will overwrite your local database. Are you sure you want to continue?')) {
-            return;
+            throw new Exception('Transfer cancelled.');
         }
 
         if ($this->option('ssh-host')) {
@@ -143,9 +163,7 @@ class DbPullCommand extends Command
         $this->info('Testing local database credentials...');
 
         if (! $this->testLocalCredentials()) {
-            $this->error('Could not connect to local mysql database.');
-
-            return;
+            throw new Exception('Could not connect to local mysql database.');
         }
 
         // test the ssh credentials
@@ -153,9 +171,7 @@ class DbPullCommand extends Command
             $this->info('Testing SSH credentials...');
 
             if (! $this->testSshCredentials()) {
-                $this->error('Could not connect to remote server via SSH.');
-
-                return;
+                throw new Exception('Could not connect to remote server via SSH.');
             }
         }
 
@@ -163,14 +179,26 @@ class DbPullCommand extends Command
         $this->info('Testing remote database credentials...');
 
         if (! $this->testRemoteCredentials()) {
-            $this->error('Could not connect to remote mysql database.');
+            throw new Exception('Could not connect to remote mysql database.');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function fire()
+    {
+        try {
+            $this->validate();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
 
             return;
         }
 
-        $mysqlCommand = $this->makeMysqlCommand(MysqlCommand::class, $this->localCredentials);
+        $mysqlCommand = (string) $this->makeMysqlCommand(MysqlCommand::class, $this->localCredentials);
 
-        $remoteCommand = $this->makeMysqlCommand(MysqlDumpCommand::class, $this->remoteCredentials);
+        $remoteCommand = (string) $this->makeMysqlCommand(MysqlDumpCommand::class, $this->remoteCredentials);
 
         if (! $this->option('no-gzip')) {
             $remoteCommand .= ' | gzip';
