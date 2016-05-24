@@ -87,10 +87,10 @@ craft db:pull --ssh-host=your.remote.server.com --ssh-user=yourUserName --force 
 
 ### DB Push
 
-Push your local remote database to a remote database.
+Push your local database to a remote database.
 
 ```
-craft db:pull --ssh-host=your.remote.server.com --ssh-user=yourUserName --force yourRemoteEnvironmentName
+craft db:push --ssh-host=your.remote.server.com --ssh-user=yourUserName --force yourRemoteEnvironmentName
 ```
 
 ### Generate Command
