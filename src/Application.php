@@ -474,6 +474,20 @@ class Application extends ConsoleApplication
      */
     public function findCommandsInDir($dir, $namespace = null)
     {
+        return $this->findClassInDir('Symfony\\Component\\Console\\Command\\Command', $dir, $namespace);
+    }
+
+    /**
+     * Get a list of classes
+     * in the specified directory
+     *
+     * @param  string $subclassOf
+     * @param  string $dir
+     * @param  string $namespace
+     * @return array
+     */
+    public function findClassInDir($subclassOf, $dir, $namespace = null)
+    {
         $commands = array();
 
         if ($namespace) {
@@ -497,7 +511,7 @@ class Application extends ConsoleApplication
                 continue;
             }
 
-            if (! $reflectionClass->isSubclassOf('Symfony\\Component\\Console\\Command\\Command')) {
+            if (! $reflectionClass->isSubclassOf($subclassOf)) {
                 continue;
             }
 
