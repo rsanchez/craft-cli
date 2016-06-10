@@ -15,7 +15,7 @@ use Craft\ConsoleApp as Craft;
 /**
  * Based on Illuminate\Console\Command
  */
-abstract class Command extends BaseCommand
+abstract class Command extends BaseCommand implements NeedsCraftInterface
 {
     /**
      * The input interface implementation.
@@ -161,8 +161,7 @@ abstract class Command extends BaseCommand
     }
 
     /**
-     * Set Craft app instance
-     * @param \Craft\ConsoleApp $craft
+     * {@inheritdoc}
      */
     public function setCraft(Craft $craft)
     {
@@ -170,8 +169,7 @@ abstract class Command extends BaseCommand
     }
 
     /**
-     * Set Craft environment
-     * @param string $environment
+     * {@inheritdoc}
      */
     public function setEnvironment($environment)
     {
@@ -179,8 +177,7 @@ abstract class Command extends BaseCommand
     }
 
     /**
-     * Set Craft app path
-     * @param string $path
+     * {@inheritdoc}
      */
     public function setAppPath($path)
     {
@@ -188,8 +185,7 @@ abstract class Command extends BaseCommand
     }
 
     /**
-     * Set Craft base path
-     * @param string $path
+     * {@inheritdoc}
      */
     public function setBasePath($path)
     {
@@ -197,8 +193,7 @@ abstract class Command extends BaseCommand
     }
 
     /**
-     * Set Craft config path
-     * @param string $path
+     * {@inheritdoc}
      */
     public function setConfigPath($path)
     {
@@ -206,8 +201,7 @@ abstract class Command extends BaseCommand
     }
 
     /**
-     * Set Craft storage path
-     * @param string $path
+     * {@inheritdoc}
      */
     public function setStoragePath($path)
     {
@@ -215,8 +209,7 @@ abstract class Command extends BaseCommand
     }
 
     /**
-     * Set Craft plugins path
-     * @param string $path
+     * {@inheritdoc}
      */
     public function setPluginsPath($path)
     {
@@ -224,8 +217,7 @@ abstract class Command extends BaseCommand
     }
 
     /**
-     * Set Craft templates path
-     * @param string $path
+     * {@inheritdoc}
      */
     public function setTemplatesPath($path)
     {
@@ -233,8 +225,7 @@ abstract class Command extends BaseCommand
     }
 
     /**
-     * Set Craft translations path
-     * @param string $path
+     * {@inheritdoc}
      */
     public function setTranslationsPath($path)
     {
