@@ -90,17 +90,9 @@ class Application extends ConsoleApplication
 
         $this->loadConfig();
 
-        $this->add(new Command\InitCommand());
-        $this->add(new Command\ConsoleCommand());
-        $this->add(new Command\ShowConfigCommand());
-        $this->add(new Command\GenerateCommandCommand());
-        $this->add(new Command\DbBackupCommand());
-        $this->add(new Command\DbPullCommand());
-        $this->add(new Command\DbPushCommand());
-        $this->add(new Command\InstallCraftCommand());
-        $this->add(new Command\InstallPluginCommand());
-        $this->add(new Command\ClearCacheCommand());
-        $this->add(new Command\TailCommand());
+        foreach ($this->findCommandsInDir(__DIR__.'/Command', '\\CraftCli\\Command') as $command) {
+            $this->registerCommand($command);
+        }
     }
 
     /**
