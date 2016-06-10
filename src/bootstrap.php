@@ -12,9 +12,7 @@ if (! isset($vendor_path)) {
 
 require $vendor_path.'autoload.php';
 
-$app = new CraftCli\Application();
-
-$app->setVendorPath($vendor_path);
+$app = new CraftCli\Application($vendor_path);
 
 $app->addComposerCommands();
 $app->addUserDefinedCommands();

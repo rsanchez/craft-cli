@@ -84,9 +84,11 @@ class Application extends ConsoleApplication
      */
     protected $config = array();
 
-    public function __construct()
+    public function __construct($vendorPath = null)
     {
         parent::__construct(self::NAME, self::VERSION);
+
+        $this->vendorPath = $vendorPath;
 
         $dispatcher = new EventDispatcher();
 
