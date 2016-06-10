@@ -78,6 +78,12 @@ class Application extends ConsoleApplication
      */
     protected $addonAuthorUrl = '';
 
+    /**
+     * Configuration items
+     * @var array
+     */
+    protected $config = array();
+
     public function __construct()
     {
         parent::__construct(self::NAME, self::VERSION);
@@ -107,6 +113,8 @@ class Application extends ConsoleApplication
     public function onCommand(ConsoleCommandEvent $event)
     {
         $command = $event->getCommand();
+
+        $command->setApplication($this);
 
         $output = $event->getOutput();
 
@@ -247,6 +255,10 @@ class Application extends ConsoleApplication
             unset($temp);
         }
 
+        $config = array_merge($config, $this->getComposerConfig());
+
+        $this->config = $config;
+
         // Set the craft path
         if (isset($config['craft_path'])) {
             $this->craftPath = $config['craft_path'];
@@ -286,6 +298,56 @@ class Application extends ConsoleApplication
         if (isset($config['commandDirs']) && is_array($config['commandDirs'])) {
             $this->userDefinedCommandDirs = $config['commandDirs'];
         }
+    }
+
+    /**
+     * Get craft-cli configuration stored in the root composer.json
+     * @return array
+     */
+    public function getComposerConfig()
+    {
+        if (! $this->vendorPath) {
+            return array();
+        }
+
+        $jsonPath = rtrim($this->vendorPath, '/').'/../composer.json';
+
+        if (! file_exists($jsonPath)) {
+            return array();
+        }
+
+        $jsonContents = file_get_contents($jsonPath);
+
+        if (! $jsonContents) {
+            return array();
+        }
+
+        $package = json_decode($jsonContents, true);
+
+        if (! isset($package['extra']['craft-cli'])) {
+            return array();
+        }
+
+        return $package['extra']['craft-cli'];
+    }
+
+    /**
+     * Get all configuration items
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * Get the specified config item
+     * @param  string $key
+     * @return mixed
+     */
+    public function getConfigItem($key)
+    {
+        return isset($this->config[$key]) ? $this->config[$key] : null;
     }
 
     /**
@@ -343,34 +405,12 @@ class Application extends ConsoleApplication
      */
     public function addCustomComposerCommands()
     {
-        if (! $this->vendorPath) {
-            return;
-        }
-
-        $jsonPath = rtrim($this->vendorPath, '/').'/../composer.json';
-
-        if (! file_exists($jsonPath)) {
-            return;
-        }
-
-        $jsonContents = file_get_contents($jsonPath);
-
-        if (! $jsonContents) {
-            return;
-        }
-
-        $package = json_decode($jsonContents, true);
-
-        if (! isset($package['extra']['craft-cli'])) {
-            return;
-        }
-
-        $namespace = isset($package['extra']['craft-cli']['namespace'])
-            ? rtrim($package['extra']['craft-cli']['namespace'], '\\').'\\'
+        $namespace = isset($this->config['namespace'])
+            ? rtrim($this->config['namespace'], '\\').'\\'
             : null;
 
-        if (! empty($package['extra']['craft-cli']['commandDirs'])) {
-            foreach ($package['extra']['craft-cli']['commandDirs'] as $commandDir) {
+        if (! empty($this->config['commandDirs'])) {
+            foreach ($this->config['commandDirs'] as $commandDir) {
                 $path = rtrim($this->vendorPath, '/').'/../'.$commandDir;
 
                 $commands = $this->findCommandsInDir($path, $namespace);
@@ -381,8 +421,8 @@ class Application extends ConsoleApplication
             }
         }
 
-        if (! empty($package['extra']['craft-cli']['commands'])) {
-            foreach ($package['extra']['craft-cli']['commands'] as $command) {
+        if (! empty($this->config['commands'])) {
+            foreach ($this->config['commands'] as $command) {
                 $this->registerCommand($namespace.$command);
             }
         }
