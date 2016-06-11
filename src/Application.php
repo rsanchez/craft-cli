@@ -538,9 +538,15 @@ class Application extends ConsoleApplication
 
         $dir = rtrim($dir, '/');
 
-        $files = glob($dir.'/*.php');
+        $files = scandir($dir);
 
         foreach ($files as $file) {
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+
+            if ($extension !== 'php') {
+                continue;
+            }
+
             $class = $namespace.basename($file, '.php');
 
             if (! class_exists($class)) {
