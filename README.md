@@ -44,6 +44,7 @@ CRAFT_ENVIRONMENT="mysite.dev" craft show:config
 - [`install`](#install)
 - [`install:plugin`](#install-plugin)
 - [`list`](#list)
+- [`rebuild:searchindexes`](#rebuild-searchindexes)
 - [`show:config`](#show-config)
 - [`tail`](#tail)
 
@@ -159,6 +160,12 @@ List the available commands.
 
 ```
 craft list
+```
+
+### Rebuild Search Indexes
+
+```
+craft rebuild:searchindexes
 ```
 
 ### Show Config
