@@ -19,6 +19,11 @@ class RebuildSearchIndexesCommand extends Command
     /**
      * {@inheritdoc}
      */
+    protected $showsDuration = true;
+
+    /**
+     * {@inheritdoc}
+     */
     protected function fire()
     {
         // Truncate the searchindex table

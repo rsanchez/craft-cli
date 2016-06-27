@@ -94,6 +94,12 @@ abstract class Command extends BaseCommand implements NeedsCraftInterface
     protected $translationsPath;
 
     /**
+     * Whether to show the command's duration after the command finishes
+     * @var boolean
+     */
+    protected $showsDuration = false;
+
+    /**
      * Specify the arguments and options on the command.
      *
      * @return void
@@ -157,7 +163,15 @@ abstract class Command extends BaseCommand implements NeedsCraftInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        return $this->fire();
+        $start = microtime(true);
+
+        $return = $this->fire();
+
+        if ($this->showsDuration) {
+            $output->writeln(sprintf('<info>Took %d seconds.</info>', microtime(true) - $start));
+        }
+
+        return $return;
     }
 
     /**
