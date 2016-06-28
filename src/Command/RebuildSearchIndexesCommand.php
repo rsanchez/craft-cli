@@ -3,6 +3,7 @@
 namespace CraftCli\Command;
 
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\InputArgument;
 
 class RebuildSearchIndexesCommand extends Command
 {
@@ -24,25 +25,43 @@ class RebuildSearchIndexesCommand extends Command
     /**
      * {@inheritdoc}
      */
+    protected function getArguments()
+    {
+        return array(
+            array(
+                'offset',
+                InputArgument::OPTIONAL,
+                'Offset the query',
+                0,
+            ),
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function fire()
     {
         // Truncate the searchindex table
         $this->craft->db->createCommand()->truncateTable('searchindex');
 
+        $offset = $this->argument('offset');
+
         // Get all the element IDs ever
         $result = $this->craft->db->createCommand()
             ->select('id, type')
             ->from('elements')
+            ->offset($offset)
             ->queryAll();
 
-        $progressBar = new ProgressBar($this->output, count($result));
+        $progressBar = new ProgressBar($this->output, count($result) + $offset);
 
         foreach ($result as $i => $row) {
             // Get the element type
             $elementType = $this->craft->elements->getElementType($row['type']);
 
             if (!$elementType) {
-                $progressBar->setProgress($i + 1);
+                $progressBar->setProgress($offset + $i + 1);
 
                 continue;
             }
@@ -101,7 +120,7 @@ class RebuildSearchIndexesCommand extends Command
                 }
             }
 
-            $progressBar->setProgress($i + 1);
+            $progressBar->setProgress($offset + $i + 1);
         }
 
         $progressBar->finish();
