@@ -42,9 +42,6 @@ class RebuildSearchIndexesCommand extends Command
      */
     protected function fire()
     {
-        // Truncate the searchindex table
-        $this->craft->db->createCommand()->truncateTable('searchindex');
-
         $offset = $this->argument('offset');
 
         // Get all the element IDs ever
@@ -65,6 +62,9 @@ class RebuildSearchIndexesCommand extends Command
 
                 continue;
             }
+
+            // delete existing indexes
+            $this->craft->db->createCommand()->delete('searchindex', 'elementId = :elementId', array(':elementId' => $row['id']));
 
             if ($elementType->isLocalized()) {
                 $localeIds = $this->craft->i18n->getSiteLocaleIds();
