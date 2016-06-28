@@ -29,7 +29,7 @@ class Application extends ConsoleApplication
     /**
      * Symfony Console Application version
      */
-    const VERSION = '0.6.1';
+    const VERSION = '0.6.2';
 
     /**
      * Default configuration file name
