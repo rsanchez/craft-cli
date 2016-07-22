@@ -45,6 +45,7 @@ CRAFT_ENVIRONMENT="mysite.dev" craft show:config
 - [`install:plugin`](#install-plugin)
 - [`list`](#list)
 - [`rebuild:searchindexes`](#rebuild-searchindexes)
+- [`run:tasks`](#run-tasks)
 - [`show:config`](#show-config)
 - [`tail`](#tail)
 
@@ -166,6 +167,26 @@ craft list
 
 ```
 craft rebuild:searchindexes
+```
+
+### Run Tasks
+
+Run all pending tasks.
+
+```
+craft run:tasks
+```
+
+Reset "running" (stalled) tasks and then run all tasks.
+
+```
+craft run:tasks --reset-running
+```
+
+Reset failed tasks and then run all tasks.
+
+```
+craft run:tasks --reset-failed
 ```
 
 ### Show Config
