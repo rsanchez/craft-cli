@@ -46,7 +46,7 @@ class GlobalArgvInput extends ArgvInput
                 parent::parse();
             } catch (RuntimeException $e) {
                 // ignore these errors, otherwise re-throw it
-                if (! preg_match('/^Too many arguments\.$|does not exist\.$/', $e->getMessage())) {
+                if (! preg_match('/^Too many arguments\.$|^No arguments expected|does not exist\.$/', $e->getMessage())) {
                     throw $e;
                 }
             }
