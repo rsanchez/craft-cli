@@ -14,7 +14,24 @@ defined('CRAFT_STORAGE_PATH')      || define('CRAFT_STORAGE_PATH',      CRAFT_BA
 defined('CRAFT_TEMPLATES_PATH')    || define('CRAFT_TEMPLATES_PATH',    CRAFT_BASE_PATH.'templates/');
 defined('CRAFT_TRANSLATIONS_PATH') || define('CRAFT_TRANSLATIONS_PATH', CRAFT_BASE_PATH.'translations/');
 
-if (!file_exists(CRAFT_CONFIG_PATH.'license.key')) {
+$directoryHelper = new CraftCli\Support\DirectoryHelper();
+
+$directoryHelper->verifyDirectoryIsReadable(CRAFT_CONFIG_PATH, 'Craft Config Path');
+$directoryHelper->verifyDirectoryIsWritable(CRAFT_STORAGE_PATH, 'Craft Storage Path');
+
+$runtimePath = CRAFT_STORAGE_PATH.'runtime/';
+
+try {
+    $directoryHelper->verifyDirectoryExists($runtimePath);
+} catch (Exception $e) {
+    $directoryHelper->createDirectory($runtimePath, 'Craft Storage Runtime Path');
+}
+
+$directoryHelper->verifyDirectoryIsWritable($runtimePath, 'Craft Storage Runtime Path');
+
+try {
+    $directoryHelper->verifyFileExists(CRAFT_CONFIG_PATH.'license.key');
+} catch (Exception $e) {
     throw new Exception('Missing license.key. Run the craft installer from your browser.');
 }
 
