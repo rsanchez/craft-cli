@@ -273,23 +273,23 @@ class Application extends ConsoleApplication
         }
 
         if (isset($config['craft_config_path'])) {
-            define('CRAFT_CONFIG_PATH', $config['craft_config_path']);
+            define('CRAFT_CONFIG_PATH', rtrim($config['craft_config_path'], '/').'/');
         }
 
         if (isset($config['craft_plugins_path'])) {
-            define('CRAFT_PLUGINS_PATH', $config['craft_plugins_path']);
+            define('CRAFT_PLUGINS_PATH', rtrim($config['craft_plugins_path'], '/').'/');
         }
 
         if (isset($config['craft_storage_path'])) {
-            define('CRAFT_STORAGE_PATH', $config['craft_storage_path']);
+            define('CRAFT_STORAGE_PATH', rtrim($config['craft_storage_path'], '/').'/');
         }
 
         if (isset($config['craft_templates_path'])) {
-            define('CRAFT_TEMPLATES_PATH', $config['craft_templates_path']);
+            define('CRAFT_TEMPLATES_PATH', rtrim($config['craft_templates_path'], '/').'/');
         }
 
         if (isset($config['craft_translations_path'])) {
-            define('CRAFT_TRANSLATIONS_PATH', $config['craft_translations_path']);
+            define('CRAFT_TRANSLATIONS_PATH', rtrim($config['craft_translations_path'], '/').'/');
         }
 
         // Add user-defined commands from config
