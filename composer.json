@@ -17,6 +17,7 @@
         "symfony/console": "~2.7|~3.0",
         "symfony/event-dispatcher": "~2.7|~3.0",
         "psy/psysh": "~0.5.1",
-        "xamin/handlebars.php": "0.10.*"
+        "xamin/handlebars.php": "0.10.*",
+        "composer/ca-bundle": "^1.0"
     }
 }

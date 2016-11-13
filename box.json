@@ -12,6 +12,10 @@
             "exclude": ["tests", "Tests"]
         },
         {
+            "name": "*.pem",
+            "in": "vendor"
+        },
+        {
             "name": "sample.craft-cli.php",
             "in": "./"
         }

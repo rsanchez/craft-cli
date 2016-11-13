@@ -4,6 +4,7 @@ namespace CraftCli\Support\Downloader;
 
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\CaBundle\CaBundle;
 use Exception;
 
 abstract class BaseDownloader
@@ -56,8 +57,18 @@ abstract class BaseDownloader
             throw new Exception('Could not open temp file.');
         }
 
+        $caPath = CaBundle::getSystemCaRootBundlePath();
+
+        if (is_dir($caPath)) {
+            $streamOptions = array('ssl' => array('capath' => $caPath));
+        } else {
+            $streamOptions = array('ssl' => array('cafile' => $caPath));
+        }
+
+        $streamParams = array('notification' => array($this, 'showDownloadProgress'));
+
         // download context so we can track download progress
-        $downloadContext = stream_context_create(array(), array('notification' => array($this, 'showDownloadProgress')));
+        $downloadContext = stream_context_create($streamOptions, $streamParams);
 
         // open the download url for reading
         $downloadHandle = @fopen($this->url, 'rb', false, $downloadContext);
