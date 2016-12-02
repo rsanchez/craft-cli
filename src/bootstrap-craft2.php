@@ -3,6 +3,8 @@
 $appPath = realpath($craftPath.'/app');
 
 defined('CRAFT_APP_PATH') || define('CRAFT_APP_PATH', $appPath.'/');
+defined('CRAFT_VENDOR_PATH') || define('CRAFT_VENDOR_PATH', CRAFT_APP_PATH.'vendor/');
+defined('CRAFT_FRAMEWORK_PATH') || define('CRAFT_FRAMEWORK_PATH', CRAFT_APP_PATH.'framework/');
 
 // The app/ folder goes inside craft/ by default, so work backwards from app/
 defined('CRAFT_BASE_PATH') || define('CRAFT_BASE_PATH', realpath(CRAFT_APP_PATH.'..').'/');
