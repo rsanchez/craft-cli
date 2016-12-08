@@ -48,6 +48,7 @@ CRAFT_ENVIRONMENT="mysite.dev" craft show:config
 - [`run:tasks`](#run-tasks)
 - [`show:config`](#show-config)
 - [`tail`](#tail)
+- [`update:assetsindexes`](#update-assetsindexes)
 
 ### Clear Cache
 
@@ -209,6 +210,12 @@ Show a tail of craft.log
 
 ```
 craft tail
+```
+
+### Update Asset Indexes
+
+```
+craft update:assetsindexes
 ```
 
 ## Custom Commands
