@@ -48,7 +48,7 @@ CRAFT_ENVIRONMENT="mysite.dev" craft show:config
 - [`run:tasks`](#run-tasks)
 - [`show:config`](#show-config)
 - [`tail`](#tail)
-- [`update:assetsindexes`](#update-assetsindexes)
+- [`update:assetsindexes`](#update-asset-indexes)
 
 ### Clear Cache
 
