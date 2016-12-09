@@ -95,7 +95,7 @@ class InstallCraftCommand extends Command implements ExemptFromBootstrapInterfac
             }
         }
 
-        $url = 'http://buildwithcraft.com/latest.tar.gz?accept_license=yes';
+        $url = 'https://buildwithcraft.com/latest.tar.gz?accept_license=yes';
 
         $this->comment('Downloading...');
 
