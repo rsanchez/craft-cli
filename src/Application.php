@@ -292,6 +292,10 @@ class Application extends ConsoleApplication
             define('CRAFT_TRANSLATIONS_PATH', rtrim($config['craft_translations_path'], '/').'/');
         }
 
+        if (isset($config['dotenv_path'])) {
+            \Dotenv::load($config['dotenv_path']);
+        }
+
         // Add user-defined commands from config
         if (isset($config['commands']) && is_array($config['commands'])) {
             $this->userDefinedCommands = $config['commands'];
