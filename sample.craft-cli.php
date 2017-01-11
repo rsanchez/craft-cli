@@ -82,8 +82,7 @@ return array(
      * from it
      */
 
-    // 'dotenv_path' => __DIR__,
-    'dotenv_path' => null,
+    'dotenv_path' => __DIR__,
 
     /**
      * Custom commands
