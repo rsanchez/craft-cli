@@ -18,6 +18,7 @@
         "symfony/event-dispatcher": "~2.7|~3.0",
         "psy/psysh": "~0.5.1",
         "xamin/handlebars.php": "0.10.*",
-        "composer/ca-bundle": "^1.0"
+        "composer/ca-bundle": "^1.0",
+        "vlucas/phpdotenv": "~2.4"
     }
 }
