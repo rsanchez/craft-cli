@@ -267,6 +267,13 @@ class Application extends ConsoleApplication
             $this->craftPath = $config['craft_path'];
         }
 
+        $dotenvPath = isset($config['dotenv_path']) ? $config['dotenv_path'] : getcwd();
+
+        if (file_exists($dotenvPath.'/.env')) {
+            $dotenv = new Dotenv($config['dotenv_path']);
+            $dotenv->load();
+        }
+
         $environment = empty($config['environment']) ? $this->getEnvironmentOption() : $config['environment'];
 
         if ($environment) {
