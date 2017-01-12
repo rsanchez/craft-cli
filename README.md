@@ -31,7 +31,7 @@ craft --environment="mysite.dev" show:config
 CRAFT_ENVIRONMENT="mysite.dev" craft show:config
 ```
 
-Craft CLI is [dotenv](https://github.com/vlucas/phpdotenv) aware, and will automagically load environment variables from a `.env` file in your project root (path can be customised via `.craft-cli.php`).
+Craft CLI is [dotenv](https://github.com/vlucas/phpdotenv) aware, and will automagically load environment variables from a `.env` file in your project root (path can be customised via `.craft-cli.php`). You may set your Craft environment by setting a `CRAFT_ENVIRONMENT` variable in your `.env` file.
 
 ## Commands
 
