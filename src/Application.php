@@ -270,7 +270,7 @@ class Application extends ConsoleApplication
         $dotenvPath = isset($config['dotenv_path']) ? $config['dotenv_path'] : getcwd();
 
         if (file_exists($dotenvPath.'/.env')) {
-            $dotenv = new Dotenv($config['dotenv_path']);
+            $dotenv = new Dotenv($dotenvPath);
             $dotenv->load();
         }
 
@@ -298,11 +298,6 @@ class Application extends ConsoleApplication
 
         if (isset($config['craft_translations_path'])) {
             define('CRAFT_TRANSLATIONS_PATH', rtrim($config['craft_translations_path'], '/').'/');
-        }
-
-        if (isset($config['dotenv_path'])) {
-            $dotenv = new Dotenv($config['dotenv_path']);
-            $dotenv->load();
         }
 
         // Add user-defined commands from config
