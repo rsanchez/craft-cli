@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArgvInput;
+use Dotenv\Dotenv;
 use ReflectionClass;
 use RuntimeException;
 
@@ -264,6 +265,13 @@ class Application extends ConsoleApplication
         // Set the craft path
         if (isset($config['craft_path'])) {
             $this->craftPath = $config['craft_path'];
+        }
+
+        $dotenvPath = isset($config['dotenv_path']) ? $config['dotenv_path'] : getcwd();
+
+        if (file_exists($dotenvPath.'/.env')) {
+            $dotenv = new Dotenv($dotenvPath);
+            $dotenv->load();
         }
 
         $environment = empty($config['environment']) ? $this->getEnvironmentOption() : $config['environment'];

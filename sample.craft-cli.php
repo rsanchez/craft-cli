@@ -74,6 +74,16 @@ return array(
     'environment' => null,
 
     /**
+     * Dotenv path
+     *
+     * (optional) If using phpdotenv, specify the path to
+     * the directory containing your .env file, and
+     * craft-cli load with load environment variables
+     * from it
+     */
+    'dotenv_path' => __DIR__,
+
+    /**
      * Custom commands
      *
      * An array of Command class names of
