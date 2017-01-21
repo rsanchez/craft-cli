@@ -42,22 +42,22 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
             array(
                 'host', // name
                 null, // shortcut
-                InputOption::VALUE_REQUIRED, // mode
-                'Database host.', // description
+                InputOption::VALUE_OPTIONAL, // mode
+                'MySQL host.', // description
                 'localhost', // default value
             ),
             array(
                 'port', // name
                 null, // shortcut
-                InputOption::VALUE_REQUIRED, // mode
-                'Database port.', // description
+                InputOption::VALUE_OPTIONAL, // mode
+                'MySQL port.', // description
                 3306, // default value
             ),
             array(
                 'name', // name
                 null, // shortcut
                 InputOption::VALUE_REQUIRED, // mode
-                'Database name.', // description
+                'MySQL database name.', // description
                 null, // default value
             ),
             array(
@@ -77,14 +77,14 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
             array(
                 'admin-user',
                 null,
-                InputOption::VALUE_REQUIRED,
-                'Optional MySQL administrative user (with CREATE privileges).',
+                InputOption::VALUE_OPTIONAL,
+                'MySQL administrative user.',
             ),
             array(
                 'admin-password',
                 null,
-                InputOption::VALUE_REQUIRED,
-                'Optional MySQL administrative password.',
+                InputOption::VALUE_OPTIONAL,
+                'MySQL administrative password.',
                 null,
             ),
             array(
@@ -135,13 +135,14 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
         } catch (Exception $e) {
             $this->error($e->getMessage());
 
-            return;
+            return -1;
         }
 
         $this->info('Creating database...');
 
         if (! $this->createDb()) {
-            throw new Exception('Failed to create database.');
+            $this->error('Failed to create database.');
+            return -1;
         }
 
         $this->info('Database created.');
