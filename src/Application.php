@@ -421,12 +421,18 @@ class Application extends ConsoleApplication
 
         if (! empty($this->config['commandDirs'])) {
             foreach ($this->config['commandDirs'] as $commandDir) {
-                $path = rtrim($this->vendorPath, '/').'/../'.$commandDir;
+                if (strncmp($commandDir, DIRECTORY_SEPARATOR, strlen(DIRECTORY_SEPARATOR)) === 0) {
+                    $path = $commandDir;
+                } else {
+                    $path = rtrim($this->vendorPath, '/').'/../'.$commandDir;
+                }
 
-                $commands = $this->findCommandsInDir($path, $namespace);
+                if (is_dir($path)) {
+                    $commands = $this->findCommandsInDir($path, $namespace);
 
-                foreach ($commands as $command) {
-                    $this->registerCommand($command);
+                    foreach ($commands as $command) {
+                        $this->registerCommand($command);
+                    }
                 }
             }
         }
