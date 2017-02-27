@@ -89,9 +89,6 @@ github-release upload --user "rsanchez" --repo "craft-cli" --tag "$TAG" --name c
 # get sha hash of phar
 SHA=$(shasum -a 256 craft.phar | cut -d ' ' -f 1)
 
-# delete phar
-rm craft.phar
-
 cd $CRAFT_CLI_HOMEBREW_DIR
 
 perl -pi -w -e "s/download\/.*?\/craft\.phar/download\/$TAG\/craft.phar/g;" craft-cli.rb
