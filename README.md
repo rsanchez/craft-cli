@@ -38,6 +38,7 @@ Craft CLI is [dotenv](https://github.com/vlucas/phpdotenv) aware, and will autom
 - [`clear:cache`](#clear-cache)
 - [`console`](#console)
 - [`db:backup`](#db-backup)
+- [`db:create`](#db-create)
 - [`db:pull`](#db-pull)
 - [`db:push`](#db-push)
 - [`generate:command`](#generate-command)
@@ -80,6 +81,14 @@ Backup your database to `craft/storage`.
 
 ```
 craft db:backup
+```
+
+### DB Create
+
+Create a database
+
+```
+craft db:create --host=localhost --port=3306 --name=yourDbName --user=yourUserName --password=yourPassword
 ```
 
 ### DB Pull
