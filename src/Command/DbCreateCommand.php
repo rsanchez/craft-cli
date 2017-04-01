@@ -139,16 +139,13 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
         try {
             $this->validate();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
-
-            return -1;
+            return $this->fail($e->getMessage());
         }
 
         $this->info(sprintf('Creating database %s...', $name));
 
         if (! $this->createDb()) {
-            $this->error(sprintf('Failed to create database %s.', $name));
-            return -1;
+            return $this->fail(sprintf('Failed to create database %s.', $name));
         }
 
         $this->info(sprintf('Database %s created.', $name));

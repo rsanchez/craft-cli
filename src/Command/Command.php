@@ -11,6 +11,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 use Craft\ConsoleApp as Craft;
+use Exception;
 
 /**
  * Based on Illuminate\Console\Command
@@ -165,7 +166,11 @@ abstract class Command extends BaseCommand implements NeedsCraftInterface
     {
         $start = microtime(true);
 
-        $return = $this->fire();
+        try {
+            $return = $this->fire();
+        } catch (Exception $e) {
+            return $this->fail($e->getMessage());
+        }
 
         if ($this->showsDuration) {
             $output->writeln(sprintf('<info>Took %d seconds.</info>', microtime(true) - $start));
@@ -464,6 +469,18 @@ abstract class Command extends BaseCommand implements NeedsCraftInterface
     protected function getOptions()
     {
         return [];
+    }
+
+    /**
+     * Print error message and return error code
+     * @param  string $message
+     * @return int    1
+     */
+    protected function fail($message)
+    {
+        $this->error($message);
+
+        return 1;
     }
 
     /**

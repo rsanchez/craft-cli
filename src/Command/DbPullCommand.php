@@ -191,9 +191,7 @@ class DbPullCommand extends Command
         try {
             $this->validate();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
-
-            return;
+            return $this->fail($e->getMessage());
         }
 
         $mysqlCommand = (string) $this->makeMysqlCommand(MysqlCommand::class, $this->localCredentials);

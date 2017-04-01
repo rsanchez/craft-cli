@@ -94,9 +94,7 @@ class UpdateAssetIndexesCommand extends Command
             $indexList = craft()->assetIndexing->getIndexListForSource($sessionId, $sourceId);
 
             if (!empty($indexList['error'])) {
-                $this->error($indexList['error']);
-
-                return;
+                return $this->fail($indexList['error']);
             }
 
             if (isset($indexList['missingFolders'])) {

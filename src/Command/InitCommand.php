@@ -32,9 +32,7 @@ class InitCommand extends Command implements ExemptFromBootstrapInterface
         $copy = copy(__DIR__.'/../../sample.craft-cli.php', $file);
 
         if ($copy === false) {
-            $this->error('Could not create the file.');
-
-            return;
+            return $this->fail('Could not create the file.');
         }
 
         $this->info('Configuration file created.');
