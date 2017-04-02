@@ -35,6 +35,18 @@ abstract class AbstractMysqlCommand
     public $password;
 
     /**
+     * Additional CLI flags
+     * @var string[]
+     */
+    public $flags = [];
+
+    /**
+     * Pipe output and grep for this string
+     * @var string
+     */
+    public $grep;
+
+    /**
      * Constructor
      * @param string $db Mysql database name
      */
@@ -78,6 +90,12 @@ abstract class AbstractMysqlCommand
             $arguments[] = '-u '.escapeshellarg($this->getUser());
         }
 
+        if ($this->flags) {
+            foreach ($this->flags as $flag) {
+                $arguments[] = $flag;
+            }
+        }
+
         return $arguments;
     }
 
@@ -109,6 +127,10 @@ abstract class AbstractMysqlCommand
 
         if ($this->db) {
             array_push($arguments, $this->db);
+        }
+
+        if ($this->grep) {
+            array_push($arguments, '| grep '.escapeshellarg($this->grep));
         }
 
         // space prefix to prevent bash history
