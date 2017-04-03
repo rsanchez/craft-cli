@@ -370,6 +370,16 @@ class Application extends ConsoleApplication
     }
 
     /**
+     * Get the path to the craft folder
+     * @param  string $craftPath
+     * @return string
+     */
+    public function setCraftPath($craftPath)
+    {
+        return $this->craftPath = $craftPath;
+    }
+
+    /**
      * Get the name of the craft folder
      * @return string
      */
