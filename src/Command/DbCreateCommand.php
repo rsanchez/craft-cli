@@ -110,7 +110,7 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
      */
     protected function validate()
     {
-        $this->info('Testing database credentials...');
+        $this->comment('Testing database credentials...');
 
         if (! $this->testDbCredentials()) {
             throw new Exception('Could not connect to local mysql database.');
@@ -142,7 +142,11 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
             return $this->fail($e->getMessage());
         }
 
-        $this->info(sprintf('Creating database %s...', $name));
+        if ($this->testDbExists()) {
+            return $this->fail(sprintf('Database %s already exists.', $name));
+        }
+
+        $this->comment(sprintf('Creating database %s...', $name));
 
         if (! $this->createDb()) {
             return $this->fail(sprintf('Failed to create database %s.', $name));
@@ -166,10 +170,14 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
 
         if (! empty($this->dbCredentials['adminUser'])) {
             $mysqlCommand->user = $this->dbCredentials['adminUser'];
+        } else if (! empty($this->dbCredentials['user'])) {
+            $mysqlCommand->user = $this->dbCredentials['user'];
         }
 
         if (! empty($this->dbCredentials['adminPassword'])) {
             $mysqlCommand->password = $this->dbCredentials['adminPassword'];
+        } else if (! empty($this->dbCredentials['password'])) {
+            $mysqlCommand->password = $this->dbCredentials['password'];
         }
 
         if (! empty($this->dbCredentials['port'])) {
@@ -239,6 +247,29 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
         exec($mysqlCommand, $output, $status);
 
         return $status === 0;
+    }
+
+    /**
+     * Test database credentials
+     * @return boolean
+     */
+    protected function testDbExists()
+    {
+        $mysqlCommand = $this->makeMysqlCommand("SHOW DATABASES LIKE '{$this->dbCredentials['name']}'");
+
+        $mysqlCommand->flags[] = '--batch';
+        $mysqlCommand->flags[] = '--skip-column-names';
+        $mysqlCommand->grep = $this->dbCredentials['name'];
+
+        if ($this->debug) {
+            $this->output->writeln((string) $mysqlCommand);
+
+            return true;
+        }
+
+        exec($mysqlCommand, $output, $status);
+
+        return !! $output;
     }
 
     /**
