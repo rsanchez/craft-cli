@@ -39,7 +39,7 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
     {
         return array(
             array(
-                'database-name',
+                'db-name',
                 InputArgument::REQUIRED,
                 'MySQL database name.',
             ),
@@ -124,7 +124,7 @@ class DbCreateCommand extends Command implements ExemptFromBootstrapInterface
     {
         $this->debug = $this->option('debug');
 
-        $name = $this->argument('database-name');
+        $name = $this->argument('db-name');
 
         $this->dbCredentials = array(
             'host' => $this->option('host'),
