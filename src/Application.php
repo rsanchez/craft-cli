@@ -169,9 +169,10 @@ class Application extends ConsoleApplication
 
     /**
      * Boot up craft
+     * @param  bool $isInstalling
      * @return \Craft\ConsoleApp
      */
-    public function bootstrap()
+    public function bootstrap($isInstalling = false)
     {
         $craftPath = $this->craftPath;
 

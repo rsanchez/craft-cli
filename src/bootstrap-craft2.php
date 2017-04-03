@@ -31,10 +31,12 @@ try {
 
 $directoryHelper->verifyDirectoryIsWritable($runtimePath, 'Craft Storage Runtime Path');
 
-try {
-    $directoryHelper->verifyFileExists(CRAFT_CONFIG_PATH.'license.key');
-} catch (Exception $e) {
-    throw new Exception('Missing license.key. Run the craft installer from your browser.');
+if (!$isInstalling) {
+    try {
+        $directoryHelper->verifyFileExists(CRAFT_CONFIG_PATH.'license.key');
+    } catch (Exception $e) {
+        throw new Exception('Missing license.key. Run the craft installer from your browser.');
+    }
 }
 
 // Set the environment
@@ -59,9 +61,9 @@ Yii::setPathOfAlias('plugins', CRAFT_PLUGINS_PATH);
 
 $config = require CRAFT_APP_PATH.'etc/config/main.php';
 
-$appClass = '\\Craft\\ConsoleApp';
+$appClass = '\\CraftCli\\Console\\ConsoleApp';
 
-$app = new $appClass($config);
+$app = new $appClass($config, $isInstalling);
 
 function craft()
 {
