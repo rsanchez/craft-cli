@@ -77,8 +77,7 @@ class TailCommand extends Command
         $logPath = "{$runtimePath}{$log}.log";
 
         if (! file_exists($runtimePath)) {
-            $this->error('Invalid log.');
-            return;
+            return $this->fail('Invalid log.');
         }
 
         $args = '';

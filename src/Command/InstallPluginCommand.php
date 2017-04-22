@@ -81,9 +81,7 @@ class InstallPluginCommand extends Command
         try {
             $filePath = $downloader->download();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
-
-            return;
+            return $this->fail($e->getMessage());
         }
 
         $this->comment('Extracting...');
@@ -91,9 +89,7 @@ class InstallPluginCommand extends Command
         $extractionPath = rtrim(sys_get_temp_dir(), '/').'/craft_plugin_'.uniqid();
 
         if (! @mkdir($extractionPath)) {
-            $this->error('Could not create directory in system temp directory.');
-
-            return;
+            return $this->fail('Could not create directory in system temp directory.');
         }
 
         $tarExtractor = new TarExtractor($filePath, $extractionPath);
@@ -106,9 +102,7 @@ class InstallPluginCommand extends Command
         try {
             $pluginFile = $pluginReader->read();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
-
-            return;
+            return $this->fail($e->getMessage());
         }
 
         $folderName = strtolower($pluginFile->getBasename('Plugin.php'));

@@ -169,9 +169,10 @@ class Application extends ConsoleApplication
 
     /**
      * Boot up craft
+     * @param  bool $isInstalling
      * @return \Craft\ConsoleApp
      */
-    public function bootstrap()
+    public function bootstrap($isInstalling = false)
     {
         $craftPath = $this->craftPath;
 
@@ -367,6 +368,16 @@ class Application extends ConsoleApplication
     public function getCraftPath()
     {
         return $this->craftPath;
+    }
+
+    /**
+     * Get the path to the craft folder
+     * @param  string $craftPath
+     * @return string
+     */
+    public function setCraftPath($craftPath)
+    {
+        return $this->craftPath = $craftPath;
     }
 
     /**
