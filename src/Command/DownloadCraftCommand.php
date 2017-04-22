@@ -61,6 +61,12 @@ class DownloadCraftCommand extends Command implements ExemptFromBootstrapInterfa
                 'Overwrite existing installation.', // description
                 null, // default value
             ),
+            array(
+                'no-prompt', // name
+                null, // shortcut
+                InputOption::VALUE_NONE, // mode
+                'No interactive prompt', // description
+            ),
         );
     }
 
@@ -77,7 +83,7 @@ class DownloadCraftCommand extends Command implements ExemptFromBootstrapInterfa
         }
 
         // check terms and conditions
-        if (! $this->option('terms') && ! $this->confirm('I agree to the terms and conditions (https://buildwithcraft.com/license)')) {
+        if (! $this->option('terms') && ($this->option('no-prompt') || ! $this->confirm('I agree to the terms and conditions (https://buildwithcraft.com/license)'))) {
             return $this->fail('You did not agree to the terms and conditions (https://buildwithcraft.com/license)');
         }
 
@@ -85,7 +91,7 @@ class DownloadCraftCommand extends Command implements ExemptFromBootstrapInterfa
         if (file_exists($path.'/craft') && ! $this->option('overwrite')) {
             $this->error('Craft is already installed here!');
 
-            if (! $this->confirm('Do you want to overwrite?')) {
+            if ($this->option('no-prompt') || ! $this->confirm('Do you want to overwrite?')) {
                 $this->info('Skipped download.');
 
                 return;

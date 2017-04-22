@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class InstallCraftCommand extends DownloadCraftCommand
 {
@@ -71,7 +72,7 @@ class InstallCraftCommand extends DownloadCraftCommand
                 null, // shortcut
                 InputOption::VALUE_OPTIONAL, // mode
                 'Default locale.', // description
-                'en', // default value
+                'en_us', // default value
             ),
             array(
                 'db-host', // name
@@ -135,6 +136,8 @@ class InstallCraftCommand extends DownloadCraftCommand
     {
         parent::fire();
 
+        $this->validateOptions();
+
         // Create database
         if ($this->option('create-db')) {
             $command = $this->getApplication()->find('db:create');
@@ -195,6 +198,124 @@ class InstallCraftCommand extends DownloadCraftCommand
         unlink($this->getPath().'/craft/config/license.key');
 
         $this->info('Craft installed.');
+    }
+
+    protected function isMissingRequiredOption($option)
+    {
+        if (!$this->option($option)) {
+            return sprintf('--%s is required', $option);
+        }
+
+        return false;
+    }
+
+    protected function validateOptions()
+    {
+        $errors = array();
+
+        if ($error = $this->isMissingRequiredOption('db-host')) {
+            $errors[] = $error;
+        }
+
+        if ($error = $this->isMissingRequiredOption('db-name')) {
+            $errors[] = $error;
+        }
+
+        if ($error = $this->isMissingRequiredOption('db-user')) {
+            $errors[] = $error;
+        }
+
+        if ($error = $this->isMissingRequiredOption('db-password')) {
+            $errors[] = $error;
+        }
+
+        if ($error = $this->isMissingRequiredOption('site-name')) {
+            $errors[] = $error;
+        }
+
+        if ($error = $this->isMissingRequiredOption('site-url')) {
+            $errors[] = $error;
+        }
+
+        if ($error = $this->isMissingRequiredOption('admin-user')) {
+            $errors[] = $error;
+        }
+
+        if ($error = $this->isMissingRequiredOption('admin-password')) {
+            $errors[] = $error;
+        }
+
+        if ($error = $this->isMissingRequiredOption('admin-email')) {
+            $errors[] = $error;
+        }
+
+        if ($error = $this->isMissingRequiredOption('locale')) {
+            $errors[] = $error;
+        }
+
+        if ($errors) {
+            if ($this->option('no-prompt')) {
+                array_walk($errors, array($this, 'error'));
+
+                exit(1);
+            } else {
+                $this->promptForOptions();
+            }
+        }
+    }
+
+    protected function promptForOption($question, $option, $allowEmpty = false)
+    {
+        do {
+            $question = new Question($question, $this->option($option));
+
+            if ($allowEmpty) {
+                $question->setValidator(function ($value) {
+                    return $value;
+                });
+            }
+
+            $value = $this->output->askQuestion($question, $this->option($option));
+        } while (!$value && !$allowEmpty);
+
+        $this->input->setOption($option, $value);
+
+        return $value;
+    }
+
+    protected function promptForOptions()
+    {
+        $this->promptForOption('Database server name or IP address', 'db-host');
+        $this->promptForOption('Database name', 'db-name');
+        $this->promptForOption('Database user', 'db-user');
+        $this->promptForOption('Database password', 'db-password');
+        $this->promptForOption('Database port', 'db-port', true);
+
+        $createDb = $this->confirm('Do you want want to create this database?');
+
+        $this->input->setOption('create-db', $createDb);
+
+        if ($createDb) {
+            $adminDbUser = $this->promptForOption('What is your admin database user? (optional, only if different from your site database user)', 'db-admin-user', true);
+
+            if ($adminDbUser) {
+                $this->promptForOption('What is your admin database password?', 'db-admin-password');
+            }
+        }
+
+        $this->promptForOption('Site Name', 'site-name');
+        $this->promptForOption('Site URL', 'site-url');
+        $this->promptForOption('Craft username', 'admin-user');
+        $this->promptForOption('Craft user password', 'admin-password');
+        $this->promptForOption('Craft user email', 'admin-email');
+
+        $locale = $this->askWithCompletion(
+            'Default Locale',
+            array('ar', 'ar_sa', 'bg', 'bg_bg', 'ca_es', 'cs', 'cy_gb', 'da', 'da_dk', 'de', 'de_at', 'de_ch', 'de_de', 'el', 'el_gr', 'en', 'en_as', 'en_au', 'en_bb', 'en_be', 'en_bm', 'en_bw', 'en_bz', 'en_ca', 'en_dsrt', 'en_dsrt_us', 'en_gb', 'en_gu', 'en_gy', 'en_hk', 'en_ie', 'en_in', 'en_jm', 'en_mh', 'en_mp', 'en_mt', 'en_mu', 'en_na', 'en_nz', 'en_ph', 'en_pk', 'en_sg', 'en_shaw', 'en_tt', 'en_um', 'en_us', 'en_us_posix', 'en_vi', 'en_za', 'en_zw', 'en_zz', 'es', 'es_cl', 'es_es', 'es_mx', 'es_us', 'es_ve', 'et', 'fi', 'fi_fi', 'fil', 'fr', 'fr_be', 'fr_ca', 'fr_ch', 'fr_fr', 'fr_ma', 'he', 'hr', 'hr_hr', 'hu', 'hu_hu', 'id', 'id_id', 'it', 'it_ch', 'it_it', 'ja', 'ja_jp', 'ko', 'ko_kr', 'lt', 'lv', 'ms', 'ms_my', 'nb', 'nb_no', 'nl', 'nl_be', 'nl_nl', 'nn', 'nn_no', 'no', 'pl', 'pl_pl', 'pt', 'pt_br', 'pt_pt', 'ro', 'ro_ro', 'ru', 'ru_ru', 'sk', 'sl', 'sr', 'sv', 'sv_se', 'th', 'th_th', 'tr', 'tr_tr', 'uk', 'vi', 'zh', 'zh_cn', 'zh_tw'),
+            'en_us'
+        );
+
+        $this->input->setOption('locale', $locale);
     }
 
     protected function generateDbConfig()
