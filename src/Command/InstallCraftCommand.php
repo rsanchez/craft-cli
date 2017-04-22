@@ -184,7 +184,7 @@ class InstallCraftCommand extends DownloadCraftCommand
             'password' => $this->option('admin-password'),
             'siteName' => $this->option('site-name'),
             'siteUrl' => $this->option('site-url'),
-            'locale' => $this->option('locale')
+            'locale' => $this->option('locale'),
         );
 
         $this->comment('Installing Craft...');
@@ -200,68 +200,40 @@ class InstallCraftCommand extends DownloadCraftCommand
         $this->info('Craft installed.');
     }
 
-    protected function isMissingRequiredOption($option)
-    {
-        if (!$this->option($option)) {
-            return sprintf('--%s is required', $option);
-        }
-
-        return false;
-    }
-
     protected function validateOptions()
     {
-        $errors = array();
+        $valid = true;
 
-        if ($error = $this->isMissingRequiredOption('db-host')) {
-            $errors[] = $error;
-        }
+        $requiredOptions = array(
+            'db-host',
+            'db-name',
+            'db-user',
+            'db-password',
+            'site-name',
+            'site-url',
+            'admin-user',
+            'admin-password',
+            'admin-email',
+            'locale',
+        );
 
-        if ($error = $this->isMissingRequiredOption('db-name')) {
-            $errors[] = $error;
-        }
+        foreach ($requiredOptions as $option) {
+            if (!$this->option('no-prompt')) {
+                $this->error = sprintf('--%s is required', $option);
 
-        if ($error = $this->isMissingRequiredOption('db-user')) {
-            $errors[] = $error;
-        }
-
-        if ($error = $this->isMissingRequiredOption('db-password')) {
-            $errors[] = $error;
-        }
-
-        if ($error = $this->isMissingRequiredOption('site-name')) {
-            $errors[] = $error;
-        }
-
-        if ($error = $this->isMissingRequiredOption('site-url')) {
-            $errors[] = $error;
-        }
-
-        if ($error = $this->isMissingRequiredOption('admin-user')) {
-            $errors[] = $error;
-        }
-
-        if ($error = $this->isMissingRequiredOption('admin-password')) {
-            $errors[] = $error;
-        }
-
-        if ($error = $this->isMissingRequiredOption('admin-email')) {
-            $errors[] = $error;
-        }
-
-        if ($error = $this->isMissingRequiredOption('locale')) {
-            $errors[] = $error;
-        }
-
-        if ($errors) {
-            if ($this->option('no-prompt')) {
-                array_walk($errors, array($this, 'error'));
-
-                exit(1);
-            } else {
-                $this->promptForOptions();
+                $valid = false;
             }
         }
+
+        if ($valid) {
+            return;
+        }
+
+        if ($this->option('no-prompt')) {
+            exit(1);
+        }
+
+        $this->promptForOptions();
     }
 
     protected function promptForOption($question, $option, $allowEmpty = false)
@@ -305,9 +277,9 @@ class InstallCraftCommand extends DownloadCraftCommand
 
         $this->promptForOption('Site Name', 'site-name');
         $this->promptForOption('Site URL', 'site-url');
-        $this->promptForOption('Craft username', 'admin-user');
-        $this->promptForOption('Craft user password', 'admin-password');
-        $this->promptForOption('Craft user email', 'admin-email');
+        $this->promptForOption('Craft admin username', 'admin-user');
+        $this->promptForOption('Craft admin password', 'admin-password');
+        $this->promptForOption('Craft admin email', 'admin-email');
 
         $locale = $this->askWithCompletion(
             'Default Locale',
