@@ -1,11 +1,18 @@
 <?php
 
-namespace CraftCli\Console;
+namespace CraftCli\Bootstrap;
 
 use Craft\ConsoleApp as CraftConsoleApp;
+use CApplication;
+use Exception;
 
 class ConsoleApp extends CraftConsoleApp
 {
+    /**
+     * @var \CraftCli\Bootstrap\ConsoleApp
+     */
+    protected static $instance;
+
     /**
      * @var boolean
      */
@@ -26,6 +33,18 @@ class ConsoleApp extends CraftConsoleApp
         $this->isInstalling = $isInstalling;
 
         parent::__construct($config);
+    }
+
+    public static function getInstance()
+    {
+        if (!self::$instance) {
+            throw new Exception('You must first set the instance via setInstance().');
+        }
+    }
+
+    public static function setInstance(CApplication $app)
+    {
+        self::$instance = $app;
     }
 
     public function isConsole()

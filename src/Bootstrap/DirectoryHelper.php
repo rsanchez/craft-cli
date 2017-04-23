@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftCli\Support;
+namespace CraftCli\Bootstrap;
 
 use Exception;
 
