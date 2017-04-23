@@ -41,6 +41,7 @@ Craft CLI is [dotenv](https://github.com/vlucas/phpdotenv) aware, and will autom
 - [`db:create`](#db-create)
 - [`db:pull`](#db-pull)
 - [`db:push`](#db-push)
+- [`download`](#download-craft)
 - [`generate:command`](#generate-command)
 - [`help`](#help)
 - [`init`](#init)
@@ -107,6 +108,20 @@ Push your local database to a remote database.
 craft db:push --ssh-host=your.remote.server.com --ssh-user=yourUserName --force yourRemoteEnvironmentName
 ```
 
+### Download Craft
+
+Download Craft to the current directory.
+
+```
+craft download
+```
+
+Create the specified directory and download Craft into it.
+
+```
+craft download path/to/directory
+```
+
 ### Generate Command
 
 Generate a custom command file in the specified directory.
@@ -147,7 +162,7 @@ This config file is only necessary if you if you are using [Custom Commands](#cu
 
 ### Install Craft
 
-Install Craft to the current directory.
+Download and install Craft to the current directory.
 
 ```
 craft install
