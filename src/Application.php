@@ -296,6 +296,10 @@ class Application extends ConsoleApplication
             $this->appPath = $config['craft_app_path'];
             define('CRAFT_APP_PATH', rtrim($config['craft_app_path'], '/').'/');
         }
+        
+        if (isset($config['craft_framework_path'])) {
+            define('CRAFT_FRAMEWORK_PATH', rtrim($config['craft_framework_path'], '/').'/');
+        }
 
         if (isset($config['craft_config_path'])) {
             define('CRAFT_CONFIG_PATH', rtrim($config['craft_config_path'], '/').'/');
