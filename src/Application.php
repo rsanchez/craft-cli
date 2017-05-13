@@ -65,7 +65,7 @@ class Application extends ConsoleApplication
      * Path to the Craft app folder
      * @var string
      */
-    protected $appPath;
+    protected $appPath = 'craft/app';
 
     /**
      * Path to the Composer vendor folder
