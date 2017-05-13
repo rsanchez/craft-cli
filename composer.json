@@ -20,6 +20,6 @@
         "xamin/handlebars.php": "0.10.*",
         "composer/ca-bundle": "^1.0",
         "vlucas/phpdotenv": "~2.4",
-        "craft-cli/bootstrap": "^0.1.0"
+        "craft-cli/bootstrap": "dev-master"
     }
 }
