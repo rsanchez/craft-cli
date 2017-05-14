@@ -13,13 +13,31 @@ if (php_sapi_name() !== 'cli') {
 
 return array(
     /**
-     * Craft path
+     * Craft base path
      *
      * Specify the path to your craft folder
      * If you leave this blank, it will assume your
      * folder is <current directory>/craft
      */
     'craft_path' => __DIR__.'/craft',
+    
+    /**
+     * Craft app path
+     *
+     * Specify the path to your craft app folder
+     * If you leave this blank, it will assume your
+     * folder is <current directory>/craft/app
+     */
+    'craft_app_path' => null,
+
+    /**
+     * Craft framework path
+     *
+     * Specify the path to your Yii framework folder
+     * If you leave this blank, it will assume your
+     * folder is <current directory>/craft/app/framework
+     */
+    'craft_framework_path' => null,
 
     /**
      * Craft config path

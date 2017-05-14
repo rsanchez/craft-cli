@@ -62,6 +62,12 @@ class Application extends ConsoleApplication
     protected $craftPath = 'craft';
 
     /**
+     * Path to the Craft app folder
+     * @var string
+     */
+    protected $appPath = 'craft/app';
+
+    /**
      * Path to the Composer vendor folder
      * @var string
      */
@@ -164,7 +170,7 @@ class Application extends ConsoleApplication
      */
     public function canBeBootstrapped()
     {
-        return file_exists($this->craftPath.'/app/Craft.php');
+        return file_exists($this->appPath.'/Craft.php');
     }
 
     /**
@@ -175,6 +181,7 @@ class Application extends ConsoleApplication
     public function bootstrap($isInstalling = false)
     {
         $craftPath = $this->craftPath;
+        $appPath = $this->appPath;
 
         if ($this->vendorPath) {
             return require $this->vendorPath.'/craft-cli/bootstrap/src/bootstrap-craft2.php';
@@ -285,6 +292,15 @@ class Application extends ConsoleApplication
             define('CRAFT_ENVIRONMENT', $environment);
         }
 
+        if (isset($config['craft_app_path'])) {
+            $this->appPath = $config['craft_app_path'];
+            define('CRAFT_APP_PATH', rtrim($config['craft_app_path'], '/').'/');
+        }
+        
+        if (isset($config['craft_framework_path'])) {
+            define('CRAFT_FRAMEWORK_PATH', rtrim($config['craft_framework_path'], '/').'/');
+        }
+
         if (isset($config['craft_config_path'])) {
             define('CRAFT_CONFIG_PATH', rtrim($config['craft_config_path'], '/').'/');
         }
@@ -303,6 +319,10 @@ class Application extends ConsoleApplication
 
         if (isset($config['craft_translations_path'])) {
             define('CRAFT_TRANSLATIONS_PATH', rtrim($config['craft_translations_path'], '/').'/');
+        }
+        
+        if (isset($this->vendorPath)) {
+            define('CRAFT_VENDOR_PATH', $this->vendorPath);
         }
 
         // Add user-defined commands from config
