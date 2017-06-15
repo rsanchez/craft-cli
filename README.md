@@ -84,6 +84,12 @@ Backup your database to `craft/storage`.
 craft db:backup
 ```
 
+Backup your database to the specified path.
+
+```
+craft db:backup ./backup.sql
+```
+
 ### DB Create
 
 Create a database
