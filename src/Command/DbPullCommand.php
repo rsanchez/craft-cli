@@ -55,25 +55,31 @@ class DbPullCommand extends Command
                 'ssh-host',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'SSH host.',
+                'SSH host of remote connection.',
             ),
             array(
                 'ssh-user',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'SSH user.',
+                'SSH user of remote connection.',
             ),
             array(
                 'ssh-port',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'SSH port.',
+                'SSH port of remote connection.',
             ),
             array(
                 'ssh-identity-file',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'SSH identity file.',
+            ),
+            array(
+                'remote-host',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Set a host for the remote MySQL connection, if different from what is found in config/db.php.',
             ),
             array(
                 'force',
@@ -133,6 +139,10 @@ class DbPullCommand extends Command
 
         if (isset($dbConfig[$remoteEnvironment])) {
             $this->remoteCredentials = array_merge($this->remoteCredentials, $dbConfig[$remoteEnvironment]);
+        }
+
+        if ($this->option('remote-host')) {
+            $this->remoteCredentials['server'] = $this->option('remote-host');
         }
 
         $this->debug = $this->option('debug');
