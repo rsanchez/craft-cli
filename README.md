@@ -41,6 +41,7 @@ Craft CLI is [dotenv](https://github.com/vlucas/phpdotenv) aware, and will autom
 - [`db:create`](#db-create)
 - [`db:pull`](#db-pull)
 - [`db:push`](#db-push)
+- [`db:restore`](#db-restore)
 - [`download`](#download-craft)
 - [`generate:command`](#generate-command)
 - [`help`](#help)
@@ -78,7 +79,7 @@ craft console
 
 ### DB Backup
 
-Backup your database to `craft/storage`.
+Backup your database to `craft/storage/backups`.
 
 ```
 craft db:backup
@@ -112,6 +113,20 @@ Push your local database to a remote database.
 
 ```
 craft db:push --ssh-host=your.remote.server.com --ssh-user=yourUserName --force yourRemoteEnvironmentName
+```
+
+### DB Restore
+
+Restore the database from the most recent backup from `craft/storage/backups`.
+
+```
+craft db:restore --force
+```
+
+Restore the database from the specified `.sql` file.
+
+```
+craft db:restore --force ./backup.sql
 ```
 
 ### Download Craft
