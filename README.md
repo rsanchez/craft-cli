@@ -35,6 +35,8 @@ Craft CLI is [dotenv](https://github.com/vlucas/phpdotenv) aware, and will autom
 
 ## Commands
 
+- [`assets:pull`](#assets-pull)
+- [`assets:push`](#assets-push)
 - [`clear:cache`](#clear-cache)
 - [`console`](#console)
 - [`db:backup`](#db-backup)
@@ -54,6 +56,22 @@ Craft CLI is [dotenv](https://github.com/vlucas/phpdotenv) aware, and will autom
 - [`show:config`](#show-config)
 - [`tail`](#tail)
 - [`update:assetsindexes`](#update-asset-indexes)
+
+### Assets Pull
+
+Pull Asset files from a remote environment.
+
+```
+craft assets:pull --ssh-host=your.remote.server.com --ssh-user=yourUserName yourRemoteEnvironmentName
+```
+
+### Assets Push
+
+Push Asset files to a remote environment
+
+```
+craft assets:push --ssh-host=your.remote.server.com --ssh-user=yourUserName yourRemoteEnvironmentName
+```
 
 ### Clear Cache
 
