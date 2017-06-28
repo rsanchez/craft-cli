@@ -82,6 +82,34 @@ class DbPullCommand extends Command
                 'Set a host for the remote MySQL connection, if different from what is found in config/db.php.',
             ),
             array(
+                'remote-name', // name
+                null, // shortcut
+                InputOption::VALUE_OPTIONAL, // mode
+                'Remote MySQL database name.', // description
+                3306, // default value
+            ),
+            array(
+                'remote-port', // name
+                null, // shortcut
+                InputOption::VALUE_OPTIONAL, // mode
+                'Remote MySQL port.', // description
+                3306, // default value
+            ),
+            array(
+                'remote-user', // name
+                null, // shortcut
+                InputOption::VALUE_REQUIRED, // mode
+                'Remote MySQL username.', // description
+                null, // default value
+            ),
+            array(
+                'remote-password', // name
+                null, // shortcut
+                InputOption::VALUE_REQUIRED, // mode
+                'Remote MySQL password.', // description
+                null, // default value
+            ),
+            array(
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
@@ -143,6 +171,22 @@ class DbPullCommand extends Command
 
         if ($this->option('remote-host')) {
             $this->remoteCredentials['server'] = $this->option('remote-host');
+        }
+
+        if ($this->option('remote-name')) {
+            $this->remoteCredentials['name'] = $this->option('remote-name');
+        }
+
+        if ($this->option('remote-user')) {
+            $this->remoteCredentials['user'] = $this->option('remote-user');
+        }
+
+        if ($this->option('remote-password')) {
+            $this->remoteCredentials['password'] = $this->option('remote-password');
+        }
+
+        if ($this->option('remote-port')) {
+            $this->remoteCredentials['port'] = $this->option('remote-port');
         }
 
         $this->debug = $this->option('debug');
