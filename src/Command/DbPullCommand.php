@@ -82,7 +82,7 @@ class DbPullCommand extends Command
                 'Set a host for the remote MySQL connection, if different from what is found in config/db.php.',
             ),
             array(
-                'remote-name', // name
+                'remote-database', // name
                 null, // shortcut
                 InputOption::VALUE_OPTIONAL, // mode
                 'Remote MySQL database name.', // description
@@ -173,8 +173,8 @@ class DbPullCommand extends Command
             $this->remoteCredentials['server'] = $this->option('remote-host');
         }
 
-        if ($this->option('remote-name')) {
-            $this->remoteCredentials['name'] = $this->option('remote-name');
+        if ($this->option('remote-database')) {
+            $this->remoteCredentials['database'] = $this->option('remote-database');
         }
 
         if ($this->option('remote-user')) {
