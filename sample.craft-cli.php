@@ -20,7 +20,7 @@ return array(
      * folder is <current directory>/craft
      */
     'craft_path' => __DIR__.'/craft',
-    
+
     /**
      * Craft app path
      *
@@ -83,6 +83,15 @@ return array(
      * folder is <current directory>/craft/translations
      */
     'craft_translations_path' => null,
+
+    /**
+     * Craft vendor path
+     *
+     * Specify the path to your craft vendor folder
+     * If you leave this blank, it will assume your
+     * folder is <current directory>/craft/app/vendor
+     */
+    'craft_vendor_path' => null,
 
     /**
      * Craft environment

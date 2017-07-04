@@ -320,9 +320,9 @@ class Application extends ConsoleApplication
         if (isset($config['craft_translations_path'])) {
             define('CRAFT_TRANSLATIONS_PATH', rtrim($config['craft_translations_path'], '/').'/');
         }
-        
-        if (isset($this->vendorPath)) {
-            define('CRAFT_VENDOR_PATH', $this->vendorPath);
+
+        if (isset($config['craft_vendor_path'])) {
+            define('CRAFT_VENDOR_PATH', rtrim($config['craft_vendor_path'], '/').'/');
         }
 
         // Add user-defined commands from config
