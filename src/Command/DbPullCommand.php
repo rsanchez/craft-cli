@@ -86,7 +86,7 @@ class DbPullCommand extends Command
                 null, // shortcut
                 InputOption::VALUE_OPTIONAL, // mode
                 'Remote MySQL database name.', // description
-                3306, // default value
+                null, // default value
             ),
             array(
                 'remote-port', // name
