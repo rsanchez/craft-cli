@@ -75,14 +75,14 @@ class DbRestoreCommand extends Command
     {
         $dbConfig = require $this->configPath.'db.php';
 
-        if (! isset($dbConfig['*'])) {
-            throw new Exception('Could not find a multi-environment configuration in your db.php.');
-        }
+        if (isset($dbConfig['*'])) {
+            $this->credentials = $dbConfig['*'];
 
-        $this->credentials = $dbConfig['*'];
-
-        if (isset($dbConfig[$this->environment])) {
-            $this->credentials = array_merge($this->credentials, $dbConfig[$this->environment]);
+            if (isset($dbConfig[$this->environment])) {
+                $this->credentials = array_merge($this->credentials, $dbConfig[$this->environment]);
+            }
+        } else {
+            $this->credentials = $dbConfig;
         }
 
         $this->debug = $this->option('debug');
