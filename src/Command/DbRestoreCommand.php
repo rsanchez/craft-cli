@@ -5,6 +5,7 @@ namespace CraftCli\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use CraftCli\Support\MysqlCommand;
+use Exception;
 
 class DbRestoreCommand extends Command
 {

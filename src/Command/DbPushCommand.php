@@ -7,6 +7,7 @@ use CraftCli\Support\MysqlCommand;
 use CraftCli\Support\MysqlDumpCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Exception;
 
 class DbPushCommand extends DbPullCommand
 {
