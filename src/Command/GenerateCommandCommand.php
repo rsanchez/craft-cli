@@ -71,6 +71,10 @@ class GenerateCommandCommand extends Command implements ExemptFromBootstrapInter
         // where to create the file, default to current directory
         $path = $this->argument('path') ?: '.';
 
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+
         // make sure it has a trailing slash
         $path = rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 
@@ -91,6 +95,8 @@ class GenerateCommandCommand extends Command implements ExemptFromBootstrapInter
         $destination = $path.$className.'Command.php';
 
         $handle = fopen($destination, 'w');
+
+        $namespace = trim($namespace, '\\');
 
         $output = $handlebars->render('Command.php', array(
             'className' => $className,
