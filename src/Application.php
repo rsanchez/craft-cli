@@ -44,18 +44,6 @@ class Application extends ConsoleApplication
     protected $hasValidCraftPath = false;
 
     /**
-     * A list of Command objects
-     * @var array
-     */
-    protected $userDefinedCommands = array();
-
-    /**
-     * A list of Command dirs
-     * @var array
-     */
-    protected $userDefinedCommandDirs = array();
-
-    /**
      * Path to the craft folder
      * @var string
      */
@@ -324,15 +312,6 @@ class Application extends ConsoleApplication
         if (isset($config['craft_vendor_path'])) {
             define('CRAFT_VENDOR_PATH', rtrim($config['craft_vendor_path'], '/').'/');
         }
-
-        // Add user-defined commands from config
-        if (isset($config['commands']) && is_array($config['commands'])) {
-            $this->userDefinedCommands = $config['commands'];
-        }
-
-        if (isset($config['commandDirs']) && is_array($config['commandDirs'])) {
-            $this->userDefinedCommandDirs = $config['commandDirs'];
-        }
     }
 
     /**
@@ -363,7 +342,17 @@ class Application extends ConsoleApplication
             return array();
         }
 
-        return $package['extra']['craft-cli'];
+        $config = $package['extra']['craft-cli'];
+
+        if (isset($config['commandDirs'])) {
+            foreach ($config['commandDirs'] as $namespace => $commandDir) {
+                if (!$this->isPathAbsolute($commandDir)) {
+                    $config['commandDirs'][$namespace] = rtrim($this->vendorPath, '/').'/../'.$commandDir;
+                }
+            }
+        }
+
+        return $config;
     }
 
     /**
@@ -432,38 +421,31 @@ class Application extends ConsoleApplication
     }
 
     /**
-     * Find any Command plugins installed via composer
-     * or supplied by the main composer.json
+     * Find any user-defined Commands in the config
      * and add them to the Application
      * @return void
      */
-    public function addComposerCommands()
-    {
-        $this->addComposerPlugins();
-        $this->addCustomComposerCommands();
-    }
-
-    /**
-     * Find any Command plugins upplied by the main composer.json
-     * and add them to the Application
-     * @return void
-     */
-    public function addCustomComposerCommands()
+    public function addUserDefinedCommands()
     {
         $namespace = isset($this->config['namespace'])
             ? rtrim($this->config['namespace'], '\\').'\\'
             : null;
 
         if (! empty($this->config['commandDirs'])) {
-            foreach ($this->config['commandDirs'] as $commandDir) {
-                if (strncmp($commandDir, DIRECTORY_SEPARATOR, strlen(DIRECTORY_SEPARATOR)) === 0) {
+            foreach ($this->config['commandDirs'] as $commandNamespace => $commandDir) {
+                // handle deprecated indexed array
+                if (is_numeric($commandNamespace)) {
+                    $commandNamespace = $namespace;
+                }
+
+                if ($this->isPathAbsolute($commandDir)) {
                     $path = $commandDir;
                 } else {
-                    $path = rtrim($this->vendorPath, '/').'/../'.$commandDir;
+                    $path = getcwd().DIRECTORY_SEPARATOR.$commandDir;
                 }
 
                 if (is_dir($path)) {
-                    $commands = $this->findCommandsInDir($path, $namespace);
+                    $commands = $this->findCommandsInDir($path, $commandNamespace, true);
 
                     foreach ($commands as $command) {
                         $this->registerCommand($command);
@@ -518,10 +500,15 @@ class Application extends ConsoleApplication
                 : null;
 
             if (! empty($package['extra']['craft-cli']['commandDirs'])) {
-                foreach ($package['extra']['craft-cli']['commandDirs'] as $commandDir) {
+                foreach ($package['extra']['craft-cli']['commandDirs'] as $commandNamespace => $commandDir) {
+                    // handle deprecated indexed array
+                    if (is_numeric($commandNamespace)) {
+                        $commandNamespace = $namespace;
+                    }
+
                     $path = rtrim($this->vendorPath, '/').'/'.$package['name'].'/'.$commandDir;
 
-                    $commands = $this->findCommandsInDir($path, $namespace);
+                    $commands = $this->findCommandsInDir($path, $commandNamespace);
 
                     foreach ($commands as $command) {
                         $this->registerCommand($command);
@@ -538,34 +525,17 @@ class Application extends ConsoleApplication
     }
 
     /**
-     * Find any user-defined Commands in the config
-     * and add them to the Application
-     * @return void
-     */
-    public function addUserDefinedCommands()
-    {
-        foreach ($this->userDefinedCommands as $class) {
-            $this->registerCommand($class);
-        }
-
-        foreach ($this->userDefinedCommandDirs as $commandNamespace => $commandDir) {
-            foreach ($this->findCommandsInDir($commandDir, $commandNamespace) as $class) {
-                $this->registerCommand($class);
-            }
-        }
-    }
-
-    /**
      * Get a list of Symfony Console Commands classes
      * in the specified directory
      *
      * @param  string $dir
      * @param  string $namespace
+     * @param  bool   $autoload
      * @return array
      */
-    public function findCommandsInDir($dir, $namespace = null)
+    public function findCommandsInDir($dir, $namespace = null, $autoload = false)
     {
-        return $this->findClassInDir('Symfony\\Component\\Console\\Command\\Command', $dir, $namespace);
+        return $this->findClassInDir('Symfony\\Component\\Console\\Command\\Command', $dir, $namespace, $autoload);
     }
 
     /**
@@ -575,11 +545,16 @@ class Application extends ConsoleApplication
      * @param  string $subclassOf
      * @param  string $dir
      * @param  string $namespace
+     * @param  bool   $autoload
      * @return array
      */
-    public function findClassInDir($subclassOf, $dir, $namespace = null)
+    public function findClassInDir($subclassOf, $dir, $namespace = null, $autoload = false)
     {
         $commands = array();
+
+        if (!is_dir($dir)) {
+            return $commands;
+        }
 
         if ($namespace) {
             $namespace = rtrim($namespace, '\\').'\\';
@@ -599,7 +574,11 @@ class Application extends ConsoleApplication
             $class = $namespace.basename($file, '.php');
 
             if (! class_exists($class)) {
-                continue;
+                if ($autoload) {
+                    require_once $dir.'/'.$file;
+                } else {
+                    continue;
+                }
             }
 
             $reflectionClass = new ReflectionClass($class);
@@ -641,5 +620,28 @@ class Application extends ConsoleApplication
         } else {
             $this->add(new $class());
         }
+    }
+
+    /**
+     * Check if path is absolute (or relative)
+     * @param  string  $path
+     * @return boolean
+     */
+    public function isPathAbsolute($path)
+    {
+        // starts with dot
+        if (strncmp($path, '.', 1) === 0) {
+            return true;
+        }
+
+        $isWindows = strncmp(strtoupper(PHP_OS), 'WIN', 3) === 0;
+
+        if ($isWindows) {
+            // matches drive + path notation (C:\) or \\network-drive\
+            return (bool) preg_match('/^([a-zA-Z]:\\\\|\\\\\\\\)/');
+        }
+
+        // starts with slash
+        return strncmp($path, '/', 1) === 0;
     }
 }
