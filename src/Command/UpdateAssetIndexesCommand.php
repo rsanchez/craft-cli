@@ -127,6 +127,8 @@ class UpdateAssetIndexesCommand extends Command
 
         $this->info('Deleting stale index data...');
 
+        $missingFiles = craft()->assetIndexing->getMissingFiles($sourceIds, $sessionId);
+
         // Clean up stale indexing data (all sessions that have all recordIds set)
         $sessionsInProgress = craft()->db->createCommand()
                 ->select('sessionId')
@@ -141,14 +143,10 @@ class UpdateAssetIndexesCommand extends Command
             craft()->db->createCommand()->delete('assetindexdata', array('not in', 'sessionId', $sessionsInProgress));
         }
 
-        if ($this->option('delete-missing-files')) {
+        if ($missingFiles && $this->option('delete-missing-files')) {
             $this->info('Deleting missing files...');
 
-            $missingFiles = craft()->assetIndexing->getMissingFiles($sourceIds, $sessionId);
-
-            if ($missingFiles) {
-                craft()->assetIndexing->removeObsoleteFileRecords(array_keys($missingFiles));
-            }
+            craft()->assetIndexing->removeObsoleteFileRecords(array_keys($missingFiles));
         }
 
         if ($missingFolders && $this->option('delete-missing-folders')) {
