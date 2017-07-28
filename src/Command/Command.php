@@ -101,6 +101,12 @@ abstract class Command extends BaseCommand implements NeedsCraftInterface
     protected $showsDuration = false;
 
     /**
+     * The Craft environment name
+     * @var string
+     */
+    protected $environment;
+
+    /**
      * Specify the arguments and options on the command.
      *
      * @return void
