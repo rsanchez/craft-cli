@@ -638,7 +638,7 @@ class Application extends ConsoleApplication
 
         if ($isWindows) {
             // matches drive + path notation (C:\) or \\network-drive\
-            return (bool) preg_match('/^([a-zA-Z]:\\\\|\\\\\\\\)/');
+            return (bool) preg_match('/^([a-zA-Z]:\\\\|\\\\\\\\)/', $path);
         }
 
         // starts with slash
