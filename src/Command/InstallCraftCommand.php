@@ -134,9 +134,19 @@ class InstallCraftCommand extends DownloadCraftCommand
 
     protected function fire()
     {
-        parent::fire();
+        $errors = $this->validateOptions();
 
-        $this->validateOptions();
+        if ($errors) {
+            if ($this->option('no-prompt')) {
+                foreach ($errors as $error) {
+                    $this->error($error);
+                }
+
+                return 1;
+            }
+
+            $this->promptForOptions();
+        }
 
         // Create database
         if ($this->option('create-db')) {
@@ -159,6 +169,8 @@ class InstallCraftCommand extends DownloadCraftCommand
                 throw new Exception('Command db:create failed.');
             }
         }
+
+        parent::fire();
 
         // 3. Install Craft CMS
         // Creates a dummy license.key file for  validations to pass.
@@ -202,7 +214,7 @@ class InstallCraftCommand extends DownloadCraftCommand
 
     protected function validateOptions()
     {
-        $valid = true;
+        $errors = [];
 
         $requiredOptions = array(
             'db-host',
@@ -218,22 +230,12 @@ class InstallCraftCommand extends DownloadCraftCommand
         );
 
         foreach ($requiredOptions as $option) {
-            if (!$this->option('no-prompt')) {
-                $this->error = sprintf('--%s is required', $option);
-
-                $valid = false;
+            if (!$this->option($option)) {
+                $errors[] = sprintf('--%s is required', $option);
             }
         }
 
-        if ($valid) {
-            return;
-        }
-
-        if ($this->option('no-prompt')) {
-            exit(1);
-        }
-
-        $this->promptForOptions();
+        return $errors;
     }
 
     protected function promptForOption($question, $option, $allowEmpty = false)
