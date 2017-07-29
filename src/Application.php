@@ -5,6 +5,7 @@ namespace CraftCli;
 use CraftCli\Command\ExemptFromBootstrapInterface;
 use CraftCli\Command\Command as BaseCommand;
 use CraftCli\Command\NeedsCraftInterface;
+use CraftCli\ClassFinder\ClassFinder;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputOption;
@@ -344,9 +345,11 @@ class Application extends ConsoleApplication
 
         $config = $package['extra']['craft-cli'];
 
+        $finder = new ClassFinder();
+
         if (isset($config['commandDirs'])) {
             foreach ($config['commandDirs'] as $namespace => $commandDir) {
-                if (!$this->isPathAbsolute($commandDir)) {
+                if (!$finder->isPathAbsolute($commandDir)) {
                     $config['commandDirs'][$namespace] = rtrim($this->vendorPath, '/').'/../'.$commandDir;
                 }
             }
@@ -432,13 +435,15 @@ class Application extends ConsoleApplication
             : null;
 
         if (! empty($this->config['commandDirs'])) {
+            $finder = new ClassFinder();
+
             foreach ($this->config['commandDirs'] as $commandNamespace => $commandDir) {
                 // handle deprecated indexed array
                 if (is_numeric($commandNamespace)) {
                     $commandNamespace = $namespace;
                 }
 
-                if ($this->isPathAbsolute($commandDir)) {
+                if ($finder->isPathAbsolute($commandDir)) {
                     $path = $commandDir;
                 } else {
                     $path = getcwd().DIRECTORY_SEPARATOR.$commandDir;
@@ -535,66 +540,7 @@ class Application extends ConsoleApplication
      */
     public function findCommandsInDir($dir, $namespace = null, $autoload = false)
     {
-        return $this->findClassInDir('Symfony\\Component\\Console\\Command\\Command', $dir, $namespace, $autoload);
-    }
-
-    /**
-     * Get a list of classes
-     * in the specified directory
-     *
-     * @param  string $subclassOf
-     * @param  string $dir
-     * @param  string $namespace
-     * @param  bool   $autoload
-     * @return array
-     */
-    public function findClassInDir($subclassOf, $dir, $namespace = null, $autoload = false)
-    {
-        $commands = array();
-
-        if (!is_dir($dir)) {
-            return $commands;
-        }
-
-        if ($namespace) {
-            $namespace = rtrim($namespace, '\\').'\\';
-        }
-
-        $dir = rtrim($dir, '/');
-
-        $files = scandir($dir);
-
-        foreach ($files as $file) {
-            $extension = pathinfo($file, PATHINFO_EXTENSION);
-
-            if ($extension !== 'php') {
-                continue;
-            }
-
-            $class = $namespace.basename($file, '.php');
-
-            if (! class_exists($class)) {
-                if ($autoload) {
-                    require_once $dir.'/'.$file;
-                } else {
-                    continue;
-                }
-            }
-
-            $reflectionClass = new ReflectionClass($class);
-
-            if (! $reflectionClass->isInstantiable()) {
-                continue;
-            }
-
-            if (! $reflectionClass->isSubclassOf($subclassOf)) {
-                continue;
-            }
-
-            $commands[] = $class;
-        }
-
-        return $commands;
+        return (new ClassFinder)->findClassInDir('Symfony\\Component\\Console\\Command\\Command', $dir, $namespace, $autoload);
     }
 
     /**
@@ -620,28 +566,5 @@ class Application extends ConsoleApplication
         } else {
             $this->add(new $class());
         }
-    }
-
-    /**
-     * Check if path is absolute (or relative)
-     * @param  string  $path
-     * @return boolean
-     */
-    public function isPathAbsolute($path)
-    {
-        // starts with dot
-        if (strncmp($path, '.', 1) === 0) {
-            return true;
-        }
-
-        $isWindows = strncmp(strtoupper(PHP_OS), 'WIN', 3) === 0;
-
-        if ($isWindows) {
-            // matches drive + path notation (C:\) or \\network-drive\
-            return (bool) preg_match('/^([a-zA-Z]:\\\\|\\\\\\\\)/', $path);
-        }
-
-        // starts with slash
-        return strncmp($path, '/', 1) === 0;
     }
 }
