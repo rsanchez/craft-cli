@@ -283,9 +283,25 @@ craft tail
 craft update:assetsindexes
 ```
 
+## Configuration
+
+Craft CLI can be configured in two ways. You may use the `craft init` command to generate a `.craft-cli.php` file. Or, if you have installed Craft CLI via composer, you may add an `extra` object to your `composer.json` and a `craft-cli` object within the `extra` object:
+
+```
+{
+    "extra": {
+        "craft-cli": {
+            "commandDirs": {
+                "\\Your\\Namespace": "path/to/commands/"
+            }
+        }
+    }
+}
+```
+
 ## Custom Commands
 
-Craft CLI custom commands are [Symfony Console](http://symfony.com/doc/current/components/console/introduction.html) Command objects. You can add custom commands to your `.craft-cli.php` config file by adding the class name to the `commands` array, or by adding a folder path to the `commandDirs` array.
+Craft CLI custom commands are [Symfony Console](http://symfony.com/doc/current/components/console/introduction.html) Command objects. You can add custom commands to your `.craft-cli.php` or `composer.json` config by adding a namespace and folder path to the `commandDirs` object.
 
 You can generate a custom command file using the `craft generate:command` command.
 

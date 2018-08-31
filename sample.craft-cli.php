@@ -111,16 +111,6 @@ return array(
     'dotenv_path' => __DIR__,
 
     /**
-     * Custom commands
-     *
-     * An array of Command class names of
-     * custom commands.
-     */
-    'commands' => array(
-        #'\\Your\\Custom\\Command',
-    ),
-
-    /**
      * Custom command directories
      *
      * An array of directories, keyed by a namespace prefix,

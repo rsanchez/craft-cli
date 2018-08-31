@@ -2,6 +2,8 @@
 
 namespace CraftCli\Support;
 
+use ReflectionClass;
+
 class ClassFinder
 {
     /**

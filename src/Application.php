@@ -5,7 +5,7 @@ namespace CraftCli;
 use CraftCli\Command\ExemptFromBootstrapInterface;
 use CraftCli\Command\Command as BaseCommand;
 use CraftCli\Command\NeedsCraftInterface;
-use CraftCli\ClassFinder\ClassFinder;
+use CraftCli\Support\ClassFinder;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +18,6 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArgvInput;
 use Dotenv\Dotenv;
-use ReflectionClass;
 use RuntimeException;
 
 class Application extends ConsoleApplication
