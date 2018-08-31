@@ -60,6 +60,9 @@ if [[ -n $(git status -s -uno) ]]; then
     exit 1
 fi
 
+# test github-release credentials
+github-release info --user "rsanchez" --repo "craft-cli" >/dev/null || { echo "\x1B[31mYou have invalid github-release credentials.\x1B[39m"; exit 1; }
+
 # replace tag in text
 perl -pi -w -e "s/const VERSION = '.*?';/const VERSION = '$TAG';/g;" src/Application.php
 
