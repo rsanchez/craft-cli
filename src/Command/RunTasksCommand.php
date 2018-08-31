@@ -44,6 +44,12 @@ class RunTasksCommand extends Command
                 InputOption::VALUE_NONE,
                 'Reset failed tasks',
             ),
+            array(
+                'type',
+                't',
+                InputOption::VALUE_OPTIONAL,
+                'Run tasks of this type'
+            ),
         );
     }
 
@@ -61,6 +67,12 @@ class RunTasksCommand extends Command
         }
 
         foreach ($tasks as $task) {
+            if ($this->option('type') !== null) {
+                // Iterate to next item if input type does not match the task type
+                if ($this->option('type') != $task->type) {
+                    continue;
+                }
+            }
             if ($task->status === TaskStatus::Running) {
                 if ($this->option('reset-running')) {
                     $this->resetTask($task);
