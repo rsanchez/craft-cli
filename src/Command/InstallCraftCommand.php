@@ -172,16 +172,20 @@ class InstallCraftCommand extends DownloadCraftCommand
 
         parent::fire();
 
+        $path = $this->getPath();
+
         // 3. Install Craft CMS
         // Creates a dummy license.key file for  validations to pass.
         // This key needs to be deleted after installation. Otherwise, Craft
         // update and licensing functions won't work properly.
         // Creates a db.config in craft/config
-        touch($this->getPath().'/craft/config/license.key');
+        touch($path.'/craft/config/license.key');
 
         $this->generateDbConfig();
 
-        $this->getApplication()->setCraftPath($this->getPath().'/craft');
+        chdir($path);
+
+        $this->getApplication()->setCraftPath($path.'/craft');
 
         $craft = $this->getApplication()->bootstrap(true);
 
@@ -189,6 +193,9 @@ class InstallCraftCommand extends DownloadCraftCommand
         if (!isset($_SERVER['SERVER_NAME'])) {
             $_SERVER['SERVER_NAME'] = 'Craft';
         }
+
+        $craft->config->set('usePathInfo', false);
+        $craft->config->set('omitScriptNameInUrls', true);
 
         $installerParams = array(
             'username' => $this->option('admin-user'),
@@ -207,7 +214,7 @@ class InstallCraftCommand extends DownloadCraftCommand
             $craft->install->run($installerParams);
         });
 
-        unlink($this->getPath().'/craft/config/license.key');
+        unlink($path.'/craft/config/license.key');
 
         $this->info('Craft installed.');
     }
