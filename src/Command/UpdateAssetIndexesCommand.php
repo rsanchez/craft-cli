@@ -5,6 +5,7 @@ namespace CraftCli\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Exception;
 
 class UpdateAssetIndexesCommand extends Command
 {
@@ -115,7 +116,7 @@ class UpdateAssetIndexesCommand extends Command
         // Index the file
         foreach ($indexes as $sourceId => $total) {
             for ($i = 0; $i < $total; $i++) {
-                craft()->assetIndexing->processIndexForSource($sessionId, $i, $sourceId);
+                $this->processIndexForSource($sessionId, $i, $sourceId);
 
                 $progressBar->setProgress(++$count);
             }
@@ -156,5 +157,26 @@ class UpdateAssetIndexesCommand extends Command
         }
 
         $this->info('Asset indexes have been updated.');
+    }
+
+    protected function processIndexForSource($sessionId, $index, $sourceId)
+    {
+        $attempts = 0;
+
+        $retries = 3;
+
+        do {
+            $attempts++;
+
+            try {
+                craft()->assetIndexing->processIndexForSource($sessionId, $index, $sourceId);
+
+                return;
+            } catch (Exception $e) {
+                if ($attempts === $retries) {
+                    throw $e;
+                }
+            }
+        } while (true);
     }
 }
