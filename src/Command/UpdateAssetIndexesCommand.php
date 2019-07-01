@@ -76,13 +76,13 @@ class UpdateAssetIndexesCommand extends Command
 
         if ($sourceIds) {
             $sources = array_filter($sources, function ($source) use ($sourceIds) {
-                return in_array($source->id, $sourceIds);
+                return in_array($source->id, $sourceIds) || in_array($source->handle, $sourceIds);
             });
-        } else {
-            $sourceIds = array_map(function ($source) {
-                return $source->id;
-            }, $sources);
         }
+
+        $sourceIds = array_map(function ($source) {
+            return $source->id;
+        }, $sources);
 
         $missingFolders = array();
 
