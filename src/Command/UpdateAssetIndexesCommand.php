@@ -5,6 +5,7 @@ namespace CraftCli\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Process\Process;
 use Exception;
 
 class UpdateAssetIndexesCommand extends Command
@@ -56,6 +57,18 @@ class UpdateAssetIndexesCommand extends Command
                 InputOption::VALUE_NONE,
                 'Delete missing folders?',
             ),
+            array(
+                'single-index',
+                'I',
+                InputOption::VALUE_REQUIRED,
+                '',
+            ),
+            array(
+                'session-id',
+                'S',
+                InputOption::VALUE_REQUIRED,
+                '',
+            ),
         );
     }
 
@@ -66,7 +79,7 @@ class UpdateAssetIndexesCommand extends Command
     {
         $indexes = array();
 
-        $sessionId = craft()->assetIndexing->getIndexingSessionId();
+        $sessionId = $this->option('session-id') ?: craft()->assetIndexing->getIndexingSessionId();
 
         $this->info('Fetching sources...');
 
@@ -80,9 +93,15 @@ class UpdateAssetIndexesCommand extends Command
             });
         }
 
-        $sourceIds = array_map(function ($source) {
+        $sourceIds = array_values(array_map(function ($source) {
             return $source->id;
-        }, $sources);
+        }, $sources));
+
+        $singleIndex = $this->option('single-index');
+
+        if ($singleIndex || $singleIndex === '0') {
+            return $this->processIndexForSource($sessionId, $singleIndex, $sourceIds[0]);
+        }
 
         $missingFolders = array();
 
@@ -116,7 +135,7 @@ class UpdateAssetIndexesCommand extends Command
         // Index the file
         foreach ($indexes as $sourceId => $total) {
             for ($i = 0; $i < $total; $i++) {
-                $this->processIndexForSource($sessionId, $i, $sourceId);
+                $this->runSingleIndex($sessionId, $i, $sourceId);
 
                 $progressBar->setProgress(++$count);
             }
@@ -157,6 +176,22 @@ class UpdateAssetIndexesCommand extends Command
         }
 
         $this->info('Asset indexes have been updated.');
+    }
+
+    protected function runSingleIndex($sessionId, $index, $sourceId)
+    {
+        $args = array(
+            PHP_BINARY,
+            $_SERVER['PHP_SELF'],
+            'update:assetsindexes',
+            '--single-index='.$index,
+            '--session-id='.$sessionId,
+            $sourceId,
+        );
+
+        $process = new Process($args);
+
+        $process->run();
     }
 
     protected function processIndexForSource($sessionId, $index, $sourceId)

@@ -21,6 +21,7 @@
         "composer/ca-bundle": "^1.0",
         "vlucas/phpdotenv": "~2.4",
         "craft-cli/bootstrap": "^0.2.0",
-        "craft-cli/base-command": "~0.0"
+        "craft-cli/base-command": "~0.0",
+        "symfony/process": "~2.7|~3.0"
     }
 }
